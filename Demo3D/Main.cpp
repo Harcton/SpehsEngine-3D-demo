@@ -4,6 +4,7 @@
 #include <SpehsEngine/InputManager.h>
 #include <SpehsEngine/Window.h>
 #include <SpehsEngine/ApplicationData.h>
+#include <SpehsEngine/PolygonBatch.h>
 #include <SpehsEngine/Camera3D.h>
 #include "Camera3DController.h"
 
@@ -15,8 +16,12 @@ void main()
 	console->addVariable("fps", applicationData->showFps);
 	console->addVariable("maxfps", applicationData->maxFps);
 
+	//Camera controller
 	SpehsEngine::Camera3D camera;
 	Camera3DController cameraController(camera);
+
+	//Drawables
+	SpehsEngine::PolygonBatch square(4, 0.5f, 0.5f);
 
 	bool run = true;
 	while (run)
@@ -28,11 +33,12 @@ void main()
 		//Update
 		console->update();
 		inputManager->update();
-
+		cameraController.update();
 		if (inputManager->isKeyDown(KEYBOARD_ESCAPE))
 			run = false;
 
 		//Render
+		square.draw();
 		console->render();
 
 		SpehsEngine::endFPS();
