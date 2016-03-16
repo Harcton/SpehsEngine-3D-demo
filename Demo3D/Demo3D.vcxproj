@@ -11,16 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Camera3DController.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\SpehsEngine\SpehsEngine\SpehsEngine.vcxproj">
       <Project>{545a88bb-7447-428b-8a73-a1e8f2bbdb33}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Camera3DController.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A498FBDD-A524-487C-9B7E-2730704B0705}</ProjectGuid>
