@@ -11,27 +11,27 @@
 void main()
 {
 
-	SpehsEngine::initialize("3D Demo");
+	spehs::initialize("3D Demo");
 	mainWindow->clearColor(0, 0, 0, 1.0f);
-	console->addVariable("fps", applicationData->showFps);
-	console->addVariable("maxfps", applicationData->maxFps);
+	spehs::console::addVariable("fps", applicationData->showFps);
+	spehs::console::addVariable("maxfps", applicationData->maxFps);
 
 	//Camera controller
-	SpehsEngine::Camera3D camera;
+	spehs::Camera3D camera;
 	Camera3DController cameraController(camera);
 
 	//Drawables
-	SpehsEngine::PolygonBatch square(4, 0.5f, 0.5f);
+	spehs::PolygonBatch square(4, 0.5f, 0.5f);
 
 	bool run = true;
 	while (run)
 	{
 		mainWindow->clearBuffer();
-		SpehsEngine::beginFPS();
+		spehs::beginFPS();
 
 
 		//Update
-		console->update();
+		spehs::console::update();
 		inputManager->update();
 		cameraController.update();
 		if (inputManager->isKeyDown(KEYBOARD_ESCAPE))
@@ -39,12 +39,12 @@ void main()
 
 		//Render
 		square.draw();
-		console->render();
+		spehs::console::render();
 
-		SpehsEngine::endFPS();
-		SpehsEngine::drawFPS();
+		spehs::endFPS();
+		spehs::drawFPS();
 		mainWindow->swapBuffers();
 	}
 
-	SpehsEngine::uninitialize();
+	spehs::uninitialize();
 }
