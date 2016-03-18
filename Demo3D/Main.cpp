@@ -6,8 +6,12 @@
 #include <SpehsEngine/ApplicationData.h>
 
 #include <SpehsEngine/Camera2D.h>
+#include <SpehsEngine/TextureManager.h>
 #include <SpehsEngine/BatchManager.h>
 #include <SpehsEngine/Polygon.h>
+#include <SpehsEngine/Point.h>
+#include <SpehsEngine/Line.h>
+#include <SpehsEngine/RNG.h>
 
 #include <vector>
 
@@ -17,19 +21,38 @@ void render();
 void input();
 
 static bool run = true;
-spehs::BatchManager* batchManager = new spehs::BatchManager(&camera);
+spehs::Camera2D* camera = new spehs::Camera2D();
+spehs::BatchManager* batchManager = new spehs::BatchManager(camera);
 
 void main()
 {
-
-	std::vector<spehs::Polygon*> polygons;
-
-	polygons.push_back(batchManager->createPolygon());
-
 	spehs::initialize("spehs_engine_testing_zone");
-	mainWindow->clearColor(0, 0, 0, 1.0f);
+	mainWindow->clearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	spehs::console::addVariable("fps", applicationData->showFps);
 	spehs::console::addVariable("maxfps", applicationData->maxFps);
+
+	spehs::setActiveBatchManager(batchManager);
+	textureManager->setDefaultTexture("test_texture.png");
+	camera->enableCameraMatrix();
+
+	std::vector<spehs::Polygon*> polygons;
+	std::vector<spehs::Point*> points;
+	std::vector<spehs::Line*> lines;
+
+	for (unsigned i = 0; i < 500; i++)
+	{
+		polygons.push_back(batchManager->createPolygon(4, 0, 100.0f, 100.0f));
+		polygons.back()->setColor(glm::vec4(1.0f));
+		polygons.back()->setPosition(0.0f, 0.0f);
+	}
+
+	for (unsigned i = 0; i < 1; i++)
+	{
+		points.push_back(batchManager->createPoint());
+		points.back()->setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		points.back()->setPosition(rng->frandom(-10.0f, 10.0f), rng->frandom(-10.0f, 10.0f));
+		points.back()->setCameraMatrixState(false);
+	}
 	
 	while (run)
 	{
@@ -41,7 +64,7 @@ void main()
 		spehs::endFPS();
 	}
 
-	polygons.clear();
+	polygons.clear(); //BatchManager cleans up the polygons
 
 	spehs::uninitialize();
 }
@@ -49,19 +72,24 @@ void main()
 void update()
 {
 	spehs::console::update();
+
 	inputManager->update();
+	run = !inputManager->isQuitRequested();
 	input();
+
+	camera->update();
 }
 
 void render()
 {
-	mainWindow->clearBuffer();
+	mainWindow->renderBegin();
+
+	batchManager->render();
 
 	spehs::console::render();
 	spehs::drawFPS();
-	batchManager->render();
 
-	mainWindow->swapBuffers();
+	mainWindow->renderEnd();
 }
 
 void input()

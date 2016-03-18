@@ -1,1 +1,0 @@
-# SpehsEngine-3D-demo
