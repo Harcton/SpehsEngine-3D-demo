@@ -14,6 +14,7 @@
 #include <SpehsEngine/RNG.h>
 
 #include <vector>
+#include <glm/vec2.hpp>
 
 
 void update();
@@ -21,8 +22,12 @@ void render();
 void input();
 
 static bool run = true;
-spehs::Camera2D* camera = new spehs::Camera2D();
-spehs::BatchManager* batchManager = new spehs::BatchManager(camera);
+spehs::Camera2D* camera;
+spehs::BatchManager* batchManager;
+
+std::vector<spehs::Polygon*> polygons;
+std::vector<spehs::Point*> points;
+std::vector<spehs::Line*> lines;
 
 void main()
 {
@@ -31,28 +36,27 @@ void main()
 	spehs::console::addVariable("fps", applicationData->showFps);
 	spehs::console::addVariable("maxfps", applicationData->maxFps);
 
+	camera = new spehs::Camera2D();
+	batchManager = new spehs::BatchManager(camera);
+
 	spehs::setActiveBatchManager(batchManager);
 	textureManager->setDefaultTexture("test_texture.png");
-	camera->enableCameraMatrix();
-
-	std::vector<spehs::Polygon*> polygons;
-	std::vector<spehs::Point*> points;
-	std::vector<spehs::Line*> lines;
-
-	for (unsigned i = 0; i < 1000; i++)
+#define distrib 20.0f
+	for (unsigned i = 0; i < 400; i++)
 	{
-		polygons.push_back(batchManager->createPolygon(9, 0, 10.0f, 10.0f));
+		polygons.push_back(batchManager->createPolygon(4, 0, 1.0f, 1.0f));
 		polygons.back()->setColor(glm::vec4(1.0f));
-		polygons.back()->setPosition(0.0f, 0.0f);
-		polygons.back()->setScale(0.5f);
-		polygons.back()->setCameraMatrixState(false);
+		polygons.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
+		polygons.back()->setScale(0.1f);
+		polygons.back()->setCameraMatrixState(true);
+		//polygons.back()->setDrawMode(spehs::OUTLINE);
 	}
 
-	for (unsigned i = 0; i < 10; i++)
+	for (unsigned i = 0; i < 0; i++)
 	{
 		points.push_back(batchManager->createPoint());
 		points.back()->setColor(1.0f, 1.0f, 1.0f, 1.0f);
-		points.back()->setPosition(rng->frandom(-5.0f, 5.0f), rng->frandom(-5.0f, 5.0f));
+		points.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
 		points.back()->setCameraMatrixState(true);
 	}
 	
@@ -86,6 +90,7 @@ void render()
 {
 	mainWindow->renderBegin();
 
+	spehs::setActiveBatchManager(batchManager);
 	batchManager->render();
 
 	spehs::console::render();
@@ -99,21 +104,65 @@ void input()
 	if (inputManager->isKeyDown(KEYBOARD_ESCAPE))
 		run = false;
 
+	static glm::vec2 pos(0.0f, 0.0f);
+	static float cameraScale = 1.0f;
+	static float rotation = 0.0f;
+
+	if (inputManager->isKeyDown(KEYBOARD_W))
+	{
+		pos.y += 0.1f;
+	}
+	if (inputManager->isKeyDown(KEYBOARD_S))
+	{
+		pos.y -= 0.1f;
+	}
+	if (inputManager->isKeyDown(KEYBOARD_A))
+	{
+		pos.x -= 0.1f;
+	}
+	if (inputManager->isKeyDown(KEYBOARD_D))
+	{
+		pos.x += 0.1f;
+	}
+	if (inputManager->isKeyDown(KEYBOARD_Q))
+	{
+		rotation += 0.1f;
+	}
+	if (inputManager->isKeyDown(KEYBOARD_E))
+	{
+		rotation -= 0.1f;
+	}
+	for (unsigned i = 0; i < polygons.size(); i++)
+	{
+		polygons[i]->setPosition(pos);
+		polygons[i]->setRotation(rotation);
+	}
+
 	//CAMERA:
 	if (inputManager->isKeyDown(KEYBOARD_LEFT))
 	{
-		camera->translate(glm::vec2(-0.1f, 0.0f));
+		camera->translate(glm::vec2(0.1f, 0.0f));
 	}
 	if (inputManager->isKeyDown(KEYBOARD_RIGHT))
 	{
-		camera->translate(glm::vec2(0.1f, 0.0f));
+		camera->translate(glm::vec2(-0.1f, 0.0f));
 	}
 	if (inputManager->isKeyDown(KEYBOARD_UP))
 	{
-		camera->translate(glm::vec2(0.0f, 0.1f));
+		camera->translate(glm::vec2(0.0f, -0.1f));
 	}
 	if (inputManager->isKeyDown(KEYBOARD_DOWN))
 	{
-		camera->translate(glm::vec2(0.0f, -0.1f));
+		camera->translate(glm::vec2(0.0f, 0.1f));
+	}
+	if (inputManager->isKeyDown(KEYBOARD_PAGEDOWN))
+	{
+		cameraScale -= 0.01f;
+		camera->scale = cameraScale;
+	}
+	if (inputManager->isKeyDown(KEYBOARD_PAGEUP))
+	{
+		cameraScale += 0.01f;
+		camera->scale = cameraScale;
 	}
 }
