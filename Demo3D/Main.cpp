@@ -39,19 +39,21 @@ void main()
 	std::vector<spehs::Point*> points;
 	std::vector<spehs::Line*> lines;
 
-	for (unsigned i = 0; i < 500; i++)
+	for (unsigned i = 0; i < 1000; i++)
 	{
-		polygons.push_back(batchManager->createPolygon(4, 0, 100.0f, 100.0f));
+		polygons.push_back(batchManager->createPolygon(9, 0, 10.0f, 10.0f));
 		polygons.back()->setColor(glm::vec4(1.0f));
 		polygons.back()->setPosition(0.0f, 0.0f);
+		polygons.back()->setScale(0.5f);
+		polygons.back()->setCameraMatrixState(false);
 	}
 
-	for (unsigned i = 0; i < 1; i++)
+	for (unsigned i = 0; i < 10; i++)
 	{
 		points.push_back(batchManager->createPoint());
 		points.back()->setColor(1.0f, 1.0f, 1.0f, 1.0f);
-		points.back()->setPosition(rng->frandom(-10.0f, 10.0f), rng->frandom(-10.0f, 10.0f));
-		points.back()->setCameraMatrixState(false);
+		points.back()->setPosition(rng->frandom(-5.0f, 5.0f), rng->frandom(-5.0f, 5.0f));
+		points.back()->setCameraMatrixState(true);
 	}
 	
 	while (run)
@@ -96,4 +98,22 @@ void input()
 {
 	if (inputManager->isKeyDown(KEYBOARD_ESCAPE))
 		run = false;
+
+	//CAMERA:
+	if (inputManager->isKeyDown(KEYBOARD_LEFT))
+	{
+		camera->translate(glm::vec2(-0.1f, 0.0f));
+	}
+	if (inputManager->isKeyDown(KEYBOARD_RIGHT))
+	{
+		camera->translate(glm::vec2(0.1f, 0.0f));
+	}
+	if (inputManager->isKeyDown(KEYBOARD_UP))
+	{
+		camera->translate(glm::vec2(0.0f, 0.1f));
+	}
+	if (inputManager->isKeyDown(KEYBOARD_DOWN))
+	{
+		camera->translate(glm::vec2(0.0f, -0.1f));
+	}
 }
