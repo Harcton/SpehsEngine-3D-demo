@@ -12,6 +12,7 @@
 #include <SpehsEngine/Point.h>
 #include <SpehsEngine/Line.h>
 #include <SpehsEngine/RNG.h>
+#include <SpehsEngine/Time.h>
 
 #include <vector>
 #include <glm/vec2.hpp>
@@ -41,23 +42,27 @@ void main()
 
 	spehs::setActiveBatchManager(batchManager);
 	textureManager->setDefaultTexture("test_texture.png");
-#define distrib 20.0f
-	for (unsigned i = 0; i < 400; i++)
+	static float distrib = 1.0f;
+
+	for (unsigned i = 0; i < 200; i++)
 	{
-		polygons.push_back(batchManager->createPolygon(4, 0, 1.0f, 1.0f));
-		polygons.back()->setColor(glm::vec4(1.0f));
-		polygons.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
+		polygons.push_back(batchManager->createPolygon(204 - i, 0, 1.0f + i, 1.0f + i));
+		polygons.back()->setColor(glm::vec4(1.0f / i));
+		//polygons.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
 		polygons.back()->setScale(0.1f);
-		polygons.back()->setCameraMatrixState(true);
-		//polygons.back()->setDrawMode(spehs::OUTLINE);
 	}
 
 	for (unsigned i = 0; i < 0; i++)
 	{
+		lines.push_back(batchManager->createLine(glm::vec2(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib)), glm::vec2(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib))));
+		lines.back()->setColor(glm::vec4(1.0f));
+	}
+
+	for (unsigned i = 0; i < 1; i++)
+	{
 		points.push_back(batchManager->createPoint());
-		points.back()->setColor(1.0f, 1.0f, 1.0f, 1.0f);
-		points.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
-		points.back()->setCameraMatrixState(true);
+		//points.back()->setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		//points.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
 	}
 	
 	while (run)
@@ -107,53 +112,64 @@ void input()
 	static glm::vec2 pos(0.0f, 0.0f);
 	static float cameraScale = 1.0f;
 	static float rotation = 0.0f;
+	static float speed;
+	speed = 0.004f * spehs::deltaTime;
 
 	if (inputManager->isKeyDown(KEYBOARD_W))
 	{
-		pos.y += 0.1f;
+		pos.y += speed;
 	}
 	if (inputManager->isKeyDown(KEYBOARD_S))
 	{
-		pos.y -= 0.1f;
+		pos.y -= speed;
 	}
 	if (inputManager->isKeyDown(KEYBOARD_A))
 	{
-		pos.x -= 0.1f;
+		pos.x -= speed;
 	}
 	if (inputManager->isKeyDown(KEYBOARD_D))
 	{
-		pos.x += 0.1f;
+		pos.x += speed;
 	}
 	if (inputManager->isKeyDown(KEYBOARD_Q))
 	{
-		rotation += 0.1f;
+		rotation += speed;
 	}
 	if (inputManager->isKeyDown(KEYBOARD_E))
 	{
-		rotation -= 0.1f;
+		rotation -= speed;
 	}
 	for (unsigned i = 0; i < polygons.size(); i++)
 	{
 		polygons[i]->setPosition(pos);
 		polygons[i]->setRotation(rotation);
 	}
+	for (unsigned i = 0; i < lines.size(); i++)
+	{
+		lines[i]->setPosition(pos);
+		lines[i]->setRotation(rotation);
+	}
+	for (unsigned i = 0; i < points.size(); i++)
+	{
+		points[i]->setPosition(pos);
+	}
 
 	//CAMERA:
 	if (inputManager->isKeyDown(KEYBOARD_LEFT))
 	{
-		camera->translate(glm::vec2(0.1f, 0.0f));
+		camera->translate(glm::vec2(speed, 0.0f));
 	}
 	if (inputManager->isKeyDown(KEYBOARD_RIGHT))
 	{
-		camera->translate(glm::vec2(-0.1f, 0.0f));
+		camera->translate(glm::vec2(-speed, 0.0f));
 	}
 	if (inputManager->isKeyDown(KEYBOARD_UP))
 	{
-		camera->translate(glm::vec2(0.0f, -0.1f));
+		camera->translate(glm::vec2(0.0f, -speed));
 	}
 	if (inputManager->isKeyDown(KEYBOARD_DOWN))
 	{
-		camera->translate(glm::vec2(0.0f, 0.1f));
+		camera->translate(glm::vec2(0.0f, speed));
 	}
 	if (inputManager->isKeyDown(KEYBOARD_PAGEDOWN))
 	{
