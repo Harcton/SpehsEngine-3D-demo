@@ -17,6 +17,8 @@
 #include <vector>
 #include <glm/vec2.hpp>
 
+#include <Windows.h>
+
 
 void update();
 void render();
@@ -33,7 +35,7 @@ std::vector<spehs::Line*> lines;
 void main()
 {
 	spehs::initialize("spehs_engine_testing_zone");
-	mainWindow->clearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	mainWindow->clearColor(0.2f, 0.2f, 0.3f, 1.0f);
 	spehs::console::addVariable("fps", applicationData->showFps);
 	spehs::console::addVariable("maxfps", applicationData->maxFps);
 
@@ -42,14 +44,13 @@ void main()
 
 	spehs::setActiveBatchManager(batchManager);
 	textureManager->setDefaultTexture("test_texture.png");
-	static float distrib = 1.0f;
+	static float distrib = 2000.0f;
 
-	for (unsigned i = 0; i < 200; i++)
+	for (unsigned i = 0; i < 3; i++)
 	{
-		polygons.push_back(batchManager->createPolygon(204 - i, 0, 1.0f + i, 1.0f + i));
-		polygons.back()->setColor(glm::vec4(1.0f / i));
-		//polygons.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
-		polygons.back()->setScale(0.1f);
+		polygons.push_back(batchManager->createPolygon(4, i, 100.0f + rng->frandom(0.2f, 5.0f) * i, 100.0f + rng->frandom(0.2f, 5.0f) * i));
+		polygons.back()->setColor(glm::vec4(1.0f - i / 100.0f));
+		polygons.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
 	}
 
 	for (unsigned i = 0; i < 0; i++)
@@ -58,7 +59,7 @@ void main()
 		lines.back()->setColor(glm::vec4(1.0f));
 	}
 
-	for (unsigned i = 0; i < 1; i++)
+	for (unsigned i = 0; i < 0; i++)
 	{
 		points.push_back(batchManager->createPoint());
 		//points.back()->setColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -75,9 +76,16 @@ void main()
 		spehs::endFPS();
 	}
 
-	polygons.clear(); //BatchManager cleans up the polygons
+	//BatchManager cleans up the primitives
+	polygons.clear(); 
+	lines.clear();
+	points.clear();
 
+	delete camera;
+	delete batchManager;
+	
 	spehs::uninitialize();
+	Sleep(500);
 }
 
 void update()
@@ -113,7 +121,7 @@ void input()
 	static float cameraScale = 1.0f;
 	static float rotation = 0.0f;
 	static float speed;
-	speed = 0.004f * spehs::deltaTime;
+	speed = 1.0f * spehs::deltaTime;
 
 	if (inputManager->isKeyDown(KEYBOARD_W))
 	{
@@ -133,25 +141,25 @@ void input()
 	}
 	if (inputManager->isKeyDown(KEYBOARD_Q))
 	{
-		rotation += speed;
+		rotation += speed / 100.0f;
 	}
 	if (inputManager->isKeyDown(KEYBOARD_E))
 	{
-		rotation -= speed;
+		rotation -= speed / 100.0f;
 	}
 	for (unsigned i = 0; i < polygons.size(); i++)
 	{
-		polygons[i]->setPosition(pos);
+		//polygons[i]->setPosition(pos);
 		polygons[i]->setRotation(rotation);
 	}
 	for (unsigned i = 0; i < lines.size(); i++)
 	{
-		lines[i]->setPosition(pos);
+		//lines[i]->setPosition(pos);
 		lines[i]->setRotation(rotation);
 	}
 	for (unsigned i = 0; i < points.size(); i++)
 	{
-		points[i]->setPosition(pos);
+		//points[i]->setPosition(pos);
 	}
 
 	//CAMERA:
