@@ -13,6 +13,7 @@
 #include <SpehsEngine/Line.h>
 #include <SpehsEngine/RNG.h>
 #include <SpehsEngine/Time.h>
+#include <SpehsEngine/Vertex.h>
 
 #include <vector>
 #include <glm/vec2.hpp>
@@ -27,6 +28,7 @@ void input();
 static bool run = true;
 spehs::Camera2D* camera;
 spehs::BatchManager* batchManager;
+spehs::Vertex* vertices;
 
 std::vector<spehs::Polygon*> polygons;
 std::vector<spehs::Point*> points;
@@ -35,7 +37,7 @@ std::vector<spehs::Line*> lines;
 void main()
 {
 	spehs::initialize("spehs_engine_testing_zone");
-	mainWindow->clearColor(0.2f, 0.2f, 0.3f, 1.0f);
+	mainWindow->clearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	spehs::console::addVariable("fps", applicationData->showFps);
 	spehs::console::addVariable("maxfps", applicationData->maxFps);
 
@@ -46,11 +48,17 @@ void main()
 	textureManager->setDefaultTexture("test_texture.png");
 	static float distrib = 500.0f;
 
-	for (unsigned i = 0; i < 50; i++)
+	vertices = new spehs::Vertex [4];
+	vertices[0].position.setPosition(-1.0f, 1.0f);
+	vertices[1].position.setPosition(-1.0f, -1.0f);
+	vertices[2].position.setPosition(1.0f, -1.0f);
+	vertices[3].position.setPosition(1.0f, 1.0f);
+
+	for (unsigned i = 0; i < 2; i++)
 	{
-		polygons.push_back(batchManager->createPolygon(4, 0, 100.0f + rng->frandom(0.2f, 5.0f) * i, 100.0f + rng->frandom(0.2f, 5.0f) * i));
+		polygons.push_back(batchManager->createPolygon(vertices, 4, 0, 100.0f + rng->frandom(0.2f, 5.0f) * i, 100.0f + rng->frandom(0.2f, 5.0f) * i));
 		polygons.back()->setColor(glm::vec4(glm::vec3(1.0f - i / 100.0f), 1.0f));
-		polygons.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
+		//polygons.back()->setPosition(rng->frandom(0, distrib), rng->frandom(0, distrib));
 	}
 
 	for (unsigned i = 0; i < 0; i++)
@@ -169,7 +177,7 @@ void input()
 
 	for (unsigned i = 0; i < polygons.size(); i++)
 	{
-		//polygons[i]->setPosition(pos);
+		polygons[i]->setPosition(pos / float(i + 1));
 		polygons[i]->setRotation(rotation);
 		polygons[i]->worldVertexArray[0].color = { R, 0.0f, 0.0f, 1.0f };
 		polygons[i]->worldVertexArray[1].color = { 0.0f, G, 0.0f, 1.0f };
@@ -205,12 +213,12 @@ void input()
 	}
 	if (inputManager->isKeyDown(KEYBOARD_PAGEDOWN))
 	{
-		cameraScale -= 0.01f;
+		cameraScale -= 0.01f * camera->scale;
 		camera->scale = cameraScale;
 	}
 	if (inputManager->isKeyDown(KEYBOARD_PAGEUP))
 	{
-		cameraScale += 0.01f;
+		cameraScale += 0.01f * camera->scale;
 		camera->scale = cameraScale;
 	}
 }
