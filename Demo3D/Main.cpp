@@ -44,12 +44,12 @@ void main()
 
 	spehs::setActiveBatchManager(batchManager);
 	textureManager->setDefaultTexture("test_texture.png");
-	static float distrib = 2000.0f;
+	static float distrib = 500.0f;
 
-	for (unsigned i = 0; i < 3; i++)
+	for (unsigned i = 0; i < 50; i++)
 	{
-		polygons.push_back(batchManager->createPolygon(4, i, 100.0f + rng->frandom(0.2f, 5.0f) * i, 100.0f + rng->frandom(0.2f, 5.0f) * i));
-		polygons.back()->setColor(glm::vec4(1.0f - i / 100.0f));
+		polygons.push_back(batchManager->createPolygon(4, 0, 100.0f + rng->frandom(0.2f, 5.0f) * i, 100.0f + rng->frandom(0.2f, 5.0f) * i));
+		polygons.back()->setColor(glm::vec4(glm::vec3(1.0f - i / 100.0f), 1.0f));
 		polygons.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
 	}
 
@@ -62,7 +62,7 @@ void main()
 	for (unsigned i = 0; i < 0; i++)
 	{
 		points.push_back(batchManager->createPoint());
-		//points.back()->setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		points.back()->setColor(1.0f, 1.0f, 1.0f, 1.0f);
 		//points.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
 	}
 	
@@ -121,6 +121,9 @@ void input()
 	static float cameraScale = 1.0f;
 	static float rotation = 0.0f;
 	static float speed;
+
+	static float R = 0.0f, G = 0.0f, B = 0.0f, A = 0.0f;
+
 	speed = 1.0f * spehs::deltaTime;
 
 	if (inputManager->isKeyDown(KEYBOARD_W))
@@ -147,10 +150,31 @@ void input()
 	{
 		rotation -= speed / 100.0f;
 	}
+	if (inputManager->isKeyDown(KEYBOARD_1))
+	{
+		R += 0.02f;
+	}
+	if (inputManager->isKeyDown(KEYBOARD_2))
+	{
+		G += 0.02f;
+	}
+	if (inputManager->isKeyDown(KEYBOARD_3))
+	{
+		B += 0.02f;
+	}
+	if (inputManager->isKeyDown(KEYBOARD_4))
+	{
+		A += 0.02f;
+	}
+
 	for (unsigned i = 0; i < polygons.size(); i++)
 	{
 		//polygons[i]->setPosition(pos);
 		polygons[i]->setRotation(rotation);
+		polygons[i]->worldVertexArray[0].color = { R, 0.0f, 0.0f, 1.0f };
+		polygons[i]->worldVertexArray[1].color = { 0.0f, G, 0.0f, 1.0f };
+		polygons[i]->worldVertexArray[2].color = { 0.0f, 0.0f, B, 1.0f };
+		polygons[i]->worldVertexArray[3].color = { 0.0f, 0.0f, 0.0f, A };
 	}
 	for (unsigned i = 0; i < lines.size(); i++)
 	{
