@@ -28,7 +28,6 @@ void input();
 static bool run = true;
 spehs::Camera2D* camera;
 spehs::BatchManager* batchManager;
-spehs::Vertex* vertices;
 
 std::vector<spehs::Polygon*> polygons;
 std::vector<spehs::Point*> points;
@@ -48,15 +47,9 @@ void main()
 	textureManager->setDefaultTexture("test_texture.png");
 	static float distrib = 500.0f;
 
-	vertices = new spehs::Vertex [4];
-	vertices[0].position.setPosition(-1.0f, 1.0f);
-	vertices[1].position.setPosition(-1.0f, -1.0f);
-	vertices[2].position.setPosition(1.0f, -1.0f);
-	vertices[3].position.setPosition(1.0f, 1.0f);
-
-	for (unsigned i = 0; i < 2; i++)
+	for (unsigned i = 0; i < 50; i++)
 	{
-		polygons.push_back(batchManager->createPolygon(vertices, 4, 0, 100.0f + rng->frandom(0.2f, 5.0f) * i, 100.0f + rng->frandom(0.2f, 5.0f) * i));
+		polygons.push_back(batchManager->createPolygon(10, 0, 100.0f + rng->frandom(0.2f, 5.0f) * i, 100.0f + rng->frandom(0.2f, 5.0f) * i));
 		polygons.back()->setColor(glm::vec4(glm::vec3(1.0f - i / 100.0f), 1.0f));
 		//polygons.back()->setPosition(rng->frandom(0, distrib), rng->frandom(0, distrib));
 	}
@@ -122,8 +115,7 @@ void render()
 
 void input()
 {
-	if (inputManager->isKeyDown(KEYBOARD_ESCAPE))
-		run = false;
+	run = !inputManager->isKeyDown(KEYBOARD_ESCAPE);
 
 	static glm::vec2 pos(0.0f, 0.0f);
 	static float cameraScale = 1.0f;
@@ -186,12 +178,12 @@ void input()
 	}
 	for (unsigned i = 0; i < lines.size(); i++)
 	{
-		//lines[i]->setPosition(pos);
+		lines[i]->setPosition(pos / float(i + 1));
 		lines[i]->setRotation(rotation);
 	}
 	for (unsigned i = 0; i < points.size(); i++)
 	{
-		//points[i]->setPosition(pos);
+		points[i]->setPosition(pos / float(i + 1));
 	}
 
 	//CAMERA:
