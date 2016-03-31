@@ -21,6 +21,9 @@
 #include <Windows.h>
 
 
+#define TARGET_POLYGON_COUNT 2000
+
+
 void update();
 void render();
 void input();
@@ -45,13 +48,13 @@ void main()
 
 	spehs::setActiveBatchManager(batchManager);
 	textureManager->setDefaultTexture("test_texture.png");
-	static float distrib = 500.0f;
+	static float distrib = 2000.0f;
 
-	for (unsigned i = 0; i < 50; i++)
+	for (unsigned i = 0; i < 0; i++)
 	{
-		polygons.push_back(batchManager->createPolygon(10, 0, 100.0f + rng->frandom(0.2f, 5.0f) * i, 100.0f + rng->frandom(0.2f, 5.0f) * i));
-		polygons.back()->setColor(glm::vec4(glm::vec3(1.0f - i / 100.0f), 1.0f));
-		//polygons.back()->setPosition(rng->frandom(0, distrib), rng->frandom(0, distrib));
+		polygons.push_back(batchManager->createPolygon(6, 0, 100.0f, 100.0f));
+		//polygons.back()->setColor(glm::vec4(glm::vec3(1.0f - i / 100.0f), 1.0f));
+		polygons.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
 	}
 
 	for (unsigned i = 0; i < 0; i++)
@@ -60,16 +63,40 @@ void main()
 		lines.back()->setColor(glm::vec4(1.0f));
 	}
 
-	for (unsigned i = 0; i < 0; i++)
+	for (unsigned i = 0; i < 1; i++)
 	{
 		points.push_back(batchManager->createPoint());
 		points.back()->setColor(1.0f, 1.0f, 1.0f, 1.0f);
-		//points.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
+		points.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
 	}
 	
 	while (run)
 	{
 		spehs::beginFPS();
+
+		//static unsigned int counter = 0;
+		//static unsigned int count = 500;
+		//static unsigned int temp;
+		//counter += spehs::deltaTime;
+		//if (counter > 16)
+		//{
+		//	counter -= 16;
+		////REMOVE
+		//	for (unsigned i = 0; i < count; i++)
+		//	{
+		//		temp = rng->irandom(0, polygons.size() - 1);
+		//		polygons[temp]->destroy();
+		//		if (polygons[temp] != polygons.back())
+		//			polygons[temp] = polygons.back();
+		//		polygons.pop_back();
+		//	}
+		////REPLACE
+		//	for (unsigned i = 0; i < count; i++)
+		//	{
+		//		polygons.push_back(batchManager->createPolygon(6, 0, 100.0f, 100.0f));
+		//		polygons.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
+		//	}
+		//}
 
 		update();
 		render();
@@ -169,7 +196,7 @@ void input()
 
 	for (unsigned i = 0; i < polygons.size(); i++)
 	{
-		polygons[i]->setPosition(pos / float(i + 1));
+		//polygons[i]->setPosition(pos / float(i + 1));
 		polygons[i]->setRotation(rotation);
 		polygons[i]->worldVertexArray[0].color = { R, 0.0f, 0.0f, 1.0f };
 		polygons[i]->worldVertexArray[1].color = { 0.0f, G, 0.0f, 1.0f };
@@ -178,12 +205,12 @@ void input()
 	}
 	for (unsigned i = 0; i < lines.size(); i++)
 	{
-		lines[i]->setPosition(pos / float(i + 1));
+		//lines[i]->setPosition(pos / float(i + 1));
 		lines[i]->setRotation(rotation);
 	}
 	for (unsigned i = 0; i < points.size(); i++)
 	{
-		points[i]->setPosition(pos / float(i + 1));
+		//points[i]->setPosition(pos / float(i + 1));
 	}
 
 	//CAMERA:
