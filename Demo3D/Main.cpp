@@ -16,7 +16,7 @@ static bool run = true;
 
 void main()
 {
-	spehs::initialize("spehs_engine_testing_zone");
+	spehs::initialize("SpehsEngine Testing");
 	mainWindow->clearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	spehs::console::addVariable("fps", applicationData->showFps);
 	spehs::console::addVariable("maxfps", applicationData->maxFps);
@@ -38,6 +38,8 @@ void main()
 		spehs::endFPS();
 	}
 
+	delete state;
+
 	spehs::uninitialize();
-	Sleep(500);
+	Sleep(700);
 }

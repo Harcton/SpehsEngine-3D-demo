@@ -5,6 +5,7 @@
 
 #include <vector>
 
+
 namespace spehs{ class Camera2D; class BatchManager; class Polygon; class Line; class Point; }
 
 class DemoState2D : public State

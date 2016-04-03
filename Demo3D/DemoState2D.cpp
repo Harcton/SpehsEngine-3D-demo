@@ -26,12 +26,13 @@ DemoState2D::DemoState2D() : distrib(2000.0f)
 	batchManager = new spehs::BatchManager(camera);
 
 	spehs::setActiveBatchManager(batchManager);
-	textureManager->setDefaultTexture("test_texture.png");
+	textureManager->setDefaultTexture("Textures/test_texture.png");
 
 	for (unsigned i = 0; i < TARGET_POLYGON_COUNT; i++)
 	{
 		polygons.push_back(batchManager->createPolygon(6, 10, 100.0f, 100.0f));
 		polygons.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
+		polygons.back()->setTexture("Textures/test_texture.png");
 	}
 
 	for (unsigned i = 0; i < 8; i++)
@@ -78,6 +79,7 @@ bool DemoState2D::update()
 		{
 			polygons.push_back(batchManager->createPolygon(6, 10, 100.0f, 100.0f));
 			polygons.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
+			polygons.back()->setTexture("Textures/test_texture.png");
 		}
 	}
 #endif
@@ -109,7 +111,7 @@ bool DemoState2D::input()
 	static float speed;
 	static float minus = 1;
 	static int minus_timer = 0;
-	static float R = 0.0f, G = 0.0f, B = 0.0f, A = 1.0f;
+	static float R = 0.5f, G = 0.5f, B = 0.5f, A = 1.0f;
 
 	speed = 1.0f * spehs::deltaTime;
 	
