@@ -6,7 +6,7 @@
 #include <vector>
 
 
-namespace spehs{ class Camera2D; class BatchManager; class Polygon; class Line; class Point; }
+namespace spehs{ class Camera2D; class BatchManager; class Polygon; class Line; class Point; class GUIRectangle; }
 
 class DemoState2D : public State
 {
@@ -27,5 +27,6 @@ private:
 	std::vector<spehs::Polygon*> polygons;
 	std::vector<spehs::Point*> points;
 	std::vector<spehs::Line*> lines;
+	spehs::GUIRectangle* rekt;
 };
 

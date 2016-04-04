@@ -13,6 +13,7 @@
 #include <SpehsEngine/RNG.h>
 #include <SpehsEngine/Time.h>
 #include <SpehsEngine/Vertex.h>
+#include <SpehsEngine/GUIRectangle.h>
 
 #include <glm/vec2.hpp>
 
@@ -47,6 +48,9 @@ DemoState2D::DemoState2D() : distrib(2000.0f)
 		points.back()->setColor(glm::vec4(0.9f));
 		points.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
 	}
+
+	rekt = new spehs::GUIRectangle(200.0f, 200.0f);
+	rekt->setColor(0, 255, 0);
 }
 DemoState2D::~DemoState2D()
 {
@@ -83,6 +87,9 @@ bool DemoState2D::update()
 		}
 	}
 #endif
+
+	rekt->update();
+	rekt->postUpdate();
 
 	spehs::console::update();
 
@@ -185,19 +192,19 @@ bool DemoState2D::input()
 	//CAMERA:
 	if (inputManager->isKeyDown(KEYBOARD_LEFT))
 	{
-		camera->translate(glm::vec2(speed, 0.0f));
+		camera->translate(glm::vec2(-speed, 0.0f));
 	}
 	if (inputManager->isKeyDown(KEYBOARD_RIGHT))
 	{
-		camera->translate(glm::vec2(-speed, 0.0f));
+		camera->translate(glm::vec2(speed, 0.0f));
 	}
 	if (inputManager->isKeyDown(KEYBOARD_UP))
 	{
-		camera->translate(glm::vec2(0.0f, -speed));
+		camera->translate(glm::vec2(0.0f, speed));
 	}
 	if (inputManager->isKeyDown(KEYBOARD_DOWN))
 	{
-		camera->translate(glm::vec2(0.0f, speed));
+		camera->translate(glm::vec2(0.0f, -speed));
 	}
 	if (inputManager->isKeyDown(KEYBOARD_PAGEDOWN))
 	{
@@ -214,7 +221,7 @@ bool DemoState2D::input()
 		cameraScale = 1.0f;
 		camera->scale = cameraScale;
 	}
-	camera->setRotation(rotation);
+	camera->setRotation(rotation / 10.0f);
 
 	return true;
 }
