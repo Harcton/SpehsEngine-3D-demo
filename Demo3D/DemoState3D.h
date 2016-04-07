@@ -23,5 +23,6 @@ private:
 	spehs::BatchManager* batchManager;
 
 	std::vector<spehs::Mesh*> meshes;
+	spehs::Mesh* hero;
 };
 
