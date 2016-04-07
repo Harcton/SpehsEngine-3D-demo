@@ -103,6 +103,7 @@ bool DemoState2D::update()
 
 void DemoState2D::render()
 {
+	spehs::setActiveBatchManager(batchManager);
 	batchManager->render();
 }
 
@@ -174,7 +175,7 @@ bool DemoState2D::input()
 	{
 		//polygons[i]->setPosition(pos / float(i + 1));
 		polygons[i]->setRotation(rotation);
-		for (unsigned w = 0; w < polygons[i]->numVertices; w++)
+		for (unsigned w = 0; w < polygons[i]->worldVertexArray.size(); w++)
 		{
 			polygons[i]->worldVertexArray[w].color = { R, G, B, A };
 		}

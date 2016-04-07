@@ -3,6 +3,10 @@
 
 #include "State.h"
 
+#include <vector>
+
+
+namespace spehs{ class Mesh; class Camera3D; class BatchManager; }
 
 class DemoState3D : public State
 {
@@ -15,6 +19,9 @@ public:
 	bool input();
 
 private:
+	spehs::Camera3D* camera;
+	spehs::BatchManager* batchManager;
 
+	std::vector<spehs::Mesh*> meshes;
 };
 

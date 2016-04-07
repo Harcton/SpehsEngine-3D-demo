@@ -10,7 +10,7 @@
 #include <SpehsEngine/Console.h>
 #include <SpehsEngine/ApplicationData.h>
 #include <SpehsEngine/Time.h>
-#include <SpehsEngine/GUIRectangle.h>
+#include <SpehsEngine/GUIRectangleList.h>
 #include <SpehsEngine/Camera2D.h>
 #include <SpehsEngine/BatchManager.h>
 #include <SpehsEngine/InputManager.h>
@@ -23,6 +23,9 @@ static bool stateActive = false;
 #define BUTTONSIZEX 400
 #define BUTTONSIZEY 80
 
+spehs::Camera2D* camera;
+spehs::BatchManager* batchManager;
+
 
 void menu()
 {
@@ -31,8 +34,6 @@ void menu()
 	spehs::console::addVariable("maxfps", applicationData->maxFps);
 
 #pragma region Inits
-	spehs::Camera2D* camera = new spehs::Camera2D();
-	spehs::BatchManager* batchManager = new spehs::BatchManager(camera);
 	spehs::setActiveBatchManager(batchManager);
 
 	State* state = nullptr;
@@ -44,23 +45,23 @@ void menu()
 
 	exitButton.setColor(120, 0, 0);
 	exitButton.setPosition(applicationData->getWindowWidthHalf() - BUTTONSIZEX / 2, applicationData->getWindowHeight() * 0.85f);
-	//exitButton.setString("EXIT");
+	exitButton.setString("EXIT");
 
 	demo2DButton.setColor(0, 120, 0);
 	demo2DButton.setPosition(applicationData->getWindowWidth() * 0.7 - BUTTONSIZEX / 2, applicationData->getWindowHeight() * 0.6f);
-	//demo2DButton.setString("GRAPHICS 2D");
+	demo2DButton.setString("GRAPHICS 2D");
 
 	audio2DButton.setColor(70, 70, 70);
 	audio2DButton.setPosition(applicationData->getWindowWidth() * 0.7 - BUTTONSIZEX / 2, applicationData->getWindowHeight() * 0.45f);
-	//audio2DButton.setString("AUDIO 2D");
+	audio2DButton.setString("AUDIO 2D");
 
 	physics2DButton.setColor(0, 50, 120);
 	physics2DButton.setPosition(applicationData->getWindowWidth() * 0.7 - BUTTONSIZEX / 2, applicationData->getWindowHeight() * 0.3f);
-	//physics2DButton.setString("PHYSICS 2D");
+	physics2DButton.setString("PHYSICS 2D");
 
 	demo3DButton.setColor(10, 80, 10);
 	demo3DButton.setPosition(applicationData->getWindowWidth() * 0.3 - BUTTONSIZEX / 2, applicationData->getWindowHeight() * 0.6f);
-	//demo3DButton.setString("GRAPHICS 2D");
+	demo3DButton.setString("GRAPHICS 3D");
 #pragma endregion
 
 	while (run)
@@ -105,7 +106,7 @@ void menu()
 					{
 						delete state;
 					}
-					state = new DemoState3D;
+					state = new AudioState2D;
 				}
 				if (physics2DButton.getMouseHover())
 				{
@@ -123,18 +124,18 @@ void menu()
 					{
 						delete state;
 					}
-					state = new AudioState2D;
+					state = new DemoState3D;
 				}
 			}
 
-			exitButton.setRenderState(true);
-			demo2DButton.setRenderState(true);
-			audio2DButton.setRenderState(true);
-			physics2DButton.setRenderState(true);
-			demo3DButton.setRenderState(true);
-
+			spehs::setActiveBatchManager(batchManager);
 			mainWindow->renderBegin();
 			batchManager->render();
+			exitButton.DRAW_TEXT();
+			demo2DButton.DRAW_TEXT();
+			audio2DButton.DRAW_TEXT();
+			physics2DButton.DRAW_TEXT();
+			demo3DButton.DRAW_TEXT();
 			mainWindow->renderEnd();
 		}
 		if (!run)
@@ -157,14 +158,16 @@ void menu()
 	{
 		delete state;
 	}
-	delete batchManager;
-	delete camera;
 }
 
 
 void main()
 {
 	spehs::initialize("SpehsEngine Testing");
+	camera = new spehs::Camera2D();
+	batchManager = new spehs::BatchManager(camera);
 	menu();
-	spehs::uninitialize(); //BUG: application data write creates a bad stream
+	delete batchManager;
+	delete camera;
+	spehs::uninitialize();
 }
