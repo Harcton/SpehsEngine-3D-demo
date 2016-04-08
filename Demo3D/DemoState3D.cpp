@@ -6,8 +6,10 @@
 #include <SpehsEngine/BatchManager.h>
 #include <SpehsEngine/Mesh.h>
 #include <SpehsEngine/Time.h>
+#include <SpehsEngine/Console.h>
 
 #include <glm/vec3.hpp>
+#include <glm/trigonometric.hpp>
 
 
 DemoState3D::DemoState3D()
@@ -16,11 +18,22 @@ DemoState3D::DemoState3D()
 	batchManager = new spehs::BatchManager(camera);
 	spehs::setActiveBatchManager(batchManager);
 
-	meshes.push_back(batchManager->createMesh("Models/case.obj"));
+	meshes.push_back(batchManager->createMesh("Models/plane.obj"));
+	meshes.back()->setPosition(0.0f, 0.0f, -1.0f);
 	hero = meshes.back();
+	hero->setColor(255, 0, 0);
+
+	meshes.push_back(batchManager->createMesh("Models/case.obj"));
+	meshes.back()->setColor(0, 255, 0);
+	meshes.back()->setRenderState(false);
 }
 DemoState3D::~DemoState3D()
 {
+	for (unsigned i = 0; i < meshes.size(); i++)
+	{
+		meshes[i]->destroy();
+	}
+
 	delete camera;
 	delete batchManager;
 }
@@ -28,10 +41,13 @@ DemoState3D::~DemoState3D()
 
 bool DemoState3D::update()
 {
+	camera->update();
+
 	if (!input())
 		return false;
 
-	camera->update();
+	spehs::console::update();
+	
 
 	return true;
 }
@@ -46,9 +62,7 @@ bool DemoState3D::input()
 {
 	static glm::vec3 rotation(0.0f);
 	static glm::vec3 position(0.0f);
-	static glm::vec3 cameraPosition(0.0f, 0.0f, -3.0f);
-	static glm::vec2 cameraLook(0.0f);
-	static float speed = 0.01f;;
+	static float speed = 0.005f;
 
 	inputManager->update();
 	if (inputManager->isKeyDown(KEYBOARD_ESCAPE) || inputManager->isQuitRequested())
@@ -58,41 +72,32 @@ bool DemoState3D::input()
 	{
 		if (inputManager->isKeyDown(KEYBOARD_W))
 		{
-			cameraPosition.z += speed * spehs::deltaTime;
+			camera->moveForward(speed * spehs::deltaTime);
 		}
 		if (inputManager->isKeyDown(KEYBOARD_S))
 		{
-			cameraPosition.z -= speed * spehs::deltaTime;
+			camera->moveBackward(speed * spehs::deltaTime);
 		}
 		if (inputManager->isKeyDown(KEYBOARD_A))
 		{
-			cameraPosition.x += speed * spehs::deltaTime;
+			camera->moveLeft(speed * spehs::deltaTime);
 		}
 		if (inputManager->isKeyDown(KEYBOARD_D))
 		{
-			cameraPosition.x -= speed * spehs::deltaTime;
+			camera->moveRight(speed * spehs::deltaTime);
 		}
 		if (inputManager->isKeyDown(KEYBOARD_E))
 		{
-			cameraPosition.y += speed * spehs::deltaTime;
+			camera->moveDown(speed * spehs::deltaTime);
 		}
 		if (inputManager->isKeyDown(KEYBOARD_Q))
 		{
-			cameraPosition.y -= speed * spehs::deltaTime;
+			camera->moveUp(speed * spehs::deltaTime);
 		}
-		cameraLook.x += inputManager->getMouseMovementX() * spehs::deltaTime * speed;
-		cameraLook.y += inputManager->getMouseMovementY() * spehs::deltaTime * speed;
-		//Restrict mouse look
-		if (cameraLook.x > 89.0f)
-			cameraLook.x = 89.0f;
-		if (cameraLook.x < -89.0f)
-			cameraLook.x = -89.0f;
-		if (cameraLook.y > 89.0f)
-			cameraLook.y = 89.0f;
-		if (cameraLook.y > -89.0f)
-			cameraLook.y = -89.0f;
+		camera->pitch(inputManager->getMouseMovementX() * spehs::deltaTime * speed); //pitch
+		camera->yaw(inputManager->getMouseMovementY() * spehs::deltaTime * speed); //yaw
 	}
-	else //Object movement
+	else//Object movement
 	{
 		//MOVE
 		if (inputManager->isKeyDown(KEYBOARD_W))
@@ -145,10 +150,10 @@ bool DemoState3D::input()
 			rotation.z += speed * spehs::deltaTime;
 		}
 	}
-	camera->setPosition(cameraPosition);
-	camera->setRotation(cameraLook);
 	hero->setPosition(position);
 	hero->setRotation(rotation);
 	
+	//camera->setTarget(position);
+
 	return true;
 }

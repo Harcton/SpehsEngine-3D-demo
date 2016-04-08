@@ -27,6 +27,5 @@ private:
 	std::vector<spehs::Polygon*> polygons;
 	std::vector<spehs::Point*> points;
 	std::vector<spehs::Line*> lines;
-	spehs::GUIRectangle* rekt;
 };
 

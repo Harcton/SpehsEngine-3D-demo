@@ -48,9 +48,6 @@ DemoState2D::DemoState2D() : distrib(2000.0f)
 		points.back()->setColor(glm::vec4(0.9f));
 		points.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
 	}
-
-	rekt = new spehs::GUIRectangle(200.0f, 200.0f);
-	rekt->setColor(0, 255, 0);
 }
 DemoState2D::~DemoState2D()
 {
@@ -87,9 +84,6 @@ bool DemoState2D::update()
 		}
 	}
 #endif
-
-	rekt->update();
-	rekt->postUpdate();
 
 	spehs::console::update();
 

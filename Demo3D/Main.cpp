@@ -127,6 +127,11 @@ void menu()
 					state = new DemoState3D;
 				}
 			}
+			if (inputManager->isKeyPressed(KEYBOARD_ESCAPE))
+			{
+				run = false;
+				stateActive = true;
+			}
 
 			spehs::setActiveBatchManager(batchManager);
 			mainWindow->renderBegin();
