@@ -19,12 +19,17 @@ DemoState3D::DemoState3D()
 	spehs::setActiveBatchManager(batchManager);
 
 	meshes.push_back(batchManager->createMesh("Models/plane.obj"));
-	meshes.back()->setPosition(0.0f, 0.0f, -1.0f);
+	meshes.back()->setPosition(0.0f, -1.0f, 3.0f);
+	meshes.back()->setColor(spehs::RED);
 	hero = meshes.back();
-	hero->setColor(255, 0, 0);
+
+	hero->worldVertexArray[0].color.setColor(spehs::YELLOW);
+	hero->worldVertexArray[1].color.setColor(spehs::ORANGE);
+	hero->worldVertexArray[2].color.setColor(spehs::GREEN);
+	hero->worldVertexArray[3].color.setColor(spehs::CYAN);
 
 	meshes.push_back(batchManager->createMesh("Models/case.obj"));
-	meshes.back()->setColor(0, 255, 0);
+	meshes.back()->setColor(spehs::CYAN);
 	meshes.back()->setRenderState(false);
 }
 DemoState3D::~DemoState3D()
@@ -46,8 +51,7 @@ bool DemoState3D::update()
 	if (!input())
 		return false;
 
-	spehs::console::update();
-	
+	spehs::console::update();	
 
 	return true;
 }
@@ -153,7 +157,7 @@ bool DemoState3D::input()
 	hero->setPosition(position);
 	hero->setRotation(rotation);
 	
-	//camera->setTarget(position);
+	camera->setTarget(position);
 
 	return true;
 }
