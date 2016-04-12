@@ -3,6 +3,8 @@
 
 #include "State.h"
 
+#include <glm/vec3.hpp>
+
 #include <vector>
 
 
@@ -24,5 +26,8 @@ private:
 
 	std::vector<spehs::Mesh*> meshes;
 	spehs::Mesh* hero;
+
+	glm::vec3 rotation;
+	glm::vec3 position;
 };
 

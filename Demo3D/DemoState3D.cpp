@@ -12,7 +12,7 @@
 #include <glm/trigonometric.hpp>
 
 
-DemoState3D::DemoState3D()
+DemoState3D::DemoState3D() : position(0.0f), rotation(0.0f)
 {
 	camera = new spehs::Camera3D();
 	batchManager = new spehs::BatchManager(camera);
@@ -64,8 +64,6 @@ void DemoState3D::render()
 
 bool DemoState3D::input()
 {
-	static glm::vec3 rotation(0.0f);
-	static glm::vec3 position(0.0f);
 	static float speed = 0.005f;
 
 	inputManager->update();

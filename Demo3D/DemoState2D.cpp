@@ -47,6 +47,7 @@ DemoState2D::DemoState2D() : distrib(2000.0f)
 		points.push_back(batchManager->createPoint(2));
 		points.back()->setColor(glm::vec4(0.9f));
 		points.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
+		points.back()->setTexture("Textures/test_texture.png");
 	}
 }
 DemoState2D::~DemoState2D()
