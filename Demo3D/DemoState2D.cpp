@@ -63,7 +63,7 @@ bool DemoState2D::update()
 	static unsigned int counter = 0;
 	static unsigned int count = 500;
 	static unsigned int temp;
-	counter += spehs::deltaTime.asMilliseconds;
+	counter += spehs::getDeltaTime().asMilliseconds;
 	if (counter > 16)
 	{
 		counter -= 16;
@@ -116,9 +116,9 @@ bool DemoState2D::input()
 	static int minus_timer = 0;
 	static float R = 0.5f, G = 0.5f, B = 0.5f, A = 1.0f;
 
-	speed = 1000.0f * spehs::deltaTime.asSeconds;
+	speed = 1000.0f * spehs::getDeltaTime().asSeconds;
 	
-	minus_timer += spehs::deltaTime.asSeconds * 1000.0f;
+	minus_timer += spehs::getDeltaTime().asSeconds * 1000.0f;
 	if (minus_timer > 2000)
 	{
 		minus_timer = 0;

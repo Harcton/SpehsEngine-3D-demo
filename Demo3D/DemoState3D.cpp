@@ -23,6 +23,10 @@ DemoState3D::DemoState3D() : position(0.0f, -1.0f, 0.0f), rotation(0.0f)
 	meshes.back()->setColor(spehs::RED);
 	hero = meshes.back();
 
+	meshes.push_back(batchManager->createMesh("Models/asteroid.obj"));
+	meshes.back()->setTexture("Textures/moon_rock.png");
+	meshes.back()->setPosition(0.0f, -6.0f, 0.0f);
+
 	meshes.push_back(batchManager->createMesh("Models/plane.obj"));
 	meshes.back()->setColor(spehs::CYAN);
 	meshes.back()->setPosition(0.0f, -10.0f, 0.0f);
@@ -70,94 +74,94 @@ bool DemoState3D::input()
 	{
 		if (inputManager->isKeyDown(KEYBOARD_W))
 		{
-			camera->move(spehs::FORWARD, speed * spehs::deltaTime.asSeconds);
+			camera->move(spehs::FORWARD, speed * spehs::getDeltaTime().asSeconds);
 		}
 		if (inputManager->isKeyDown(KEYBOARD_S))
 		{
-			camera->move(spehs::BACKWARD, speed * spehs::deltaTime.asSeconds);
+			camera->move(spehs::BACKWARD, speed * spehs::getDeltaTime().asSeconds);
 		}
 		if (inputManager->isKeyDown(KEYBOARD_A))
 		{
-			camera->move(spehs::LEFT, speed * spehs::deltaTime.asSeconds);
+			camera->move(spehs::LEFT, speed * spehs::getDeltaTime().asSeconds);
 		}
 		if (inputManager->isKeyDown(KEYBOARD_D))
 		{
-			camera->move(spehs::RIGHT, speed * spehs::deltaTime.asSeconds);
+			camera->move(spehs::RIGHT, speed * spehs::getDeltaTime().asSeconds);
 		}
 		if (inputManager->isKeyDown(KEYBOARD_E))
 		{
-			camera->move(spehs::DOWN, speed * spehs::deltaTime.asSeconds);
+			camera->move(spehs::DOWN, speed * spehs::getDeltaTime().asSeconds);
 		}
 		if (inputManager->isKeyDown(KEYBOARD_Q))
 		{
-			camera->move(spehs::UP, speed * spehs::deltaTime.asSeconds);
+			camera->move(spehs::UP, speed * spehs::getDeltaTime().asSeconds);
 		}
-		camera->pitch(inputManager->getMouseMovementX() * spehs::deltaTime.asSeconds * lookSpeed);
-		camera->yaw(inputManager->getMouseMovementY() * spehs::deltaTime.asSeconds * lookSpeed);
+		camera->pitch(inputManager->getMouseMovementX() * spehs::getDeltaTime().asSeconds * lookSpeed);
+		camera->yaw(inputManager->getMouseMovementY() * spehs::getDeltaTime().asSeconds * lookSpeed);
 	}
 	else//Object movement
 	{
 		if (inputManager->isKeyDown(MOUSEBUTTON_MIDDLE))
 		{
-			camera->move(spehs::UP, inputManager->getMouseMovementY() * lookSpeed * spehs::deltaTime.asSeconds);
-			camera->move(spehs::RIGHT, inputManager->getMouseMovementX() * lookSpeed * spehs::deltaTime.asSeconds);
+			camera->move(spehs::UP, inputManager->getMouseMovementY() * lookSpeed * spehs::getDeltaTime().asSeconds);
+			camera->move(spehs::RIGHT, inputManager->getMouseMovementX() * lookSpeed * spehs::getDeltaTime().asSeconds);
 		}
 		//MOVE
 		if (inputManager->isKeyDown(KEYBOARD_W))
 		{
-			position.z -= speed * spehs::deltaTime.asSeconds;
+			position.z -= speed * spehs::getDeltaTime().asSeconds;
 		}
 		if (inputManager->isKeyDown(KEYBOARD_S))
 		{
-			position.z += speed * spehs::deltaTime.asSeconds;
+			position.z += speed * spehs::getDeltaTime().asSeconds;
 		}
 		if (inputManager->isKeyDown(KEYBOARD_A))
 		{
-			position.x -= speed * spehs::deltaTime.asSeconds;
+			position.x -= speed * spehs::getDeltaTime().asSeconds;
 		}
 		if (inputManager->isKeyDown(KEYBOARD_D))
 		{
-			position.x += speed * spehs::deltaTime.asSeconds;
+			position.x += speed * spehs::getDeltaTime().asSeconds;
 		}
 		if (inputManager->isKeyDown(KEYBOARD_E))
 		{
-			position.y -= speed * spehs::deltaTime.asSeconds;
+			position.y -= speed * spehs::getDeltaTime().asSeconds;
 		}
 		if (inputManager->isKeyDown(KEYBOARD_Q))
 		{
-			position.y += speed * spehs::deltaTime.asSeconds;
+			position.y += speed * spehs::getDeltaTime().asSeconds;
 		}
 		//ROTATE
 		if (inputManager->isKeyDown(KEYBOARD_L))
 		{
-			rotation.y -= speed * spehs::deltaTime.asSeconds;
+			rotation.y -= speed * spehs::getDeltaTime().asSeconds;
 		}
 		if (inputManager->isKeyDown(KEYBOARD_J))
 		{
-			rotation.y += speed * spehs::deltaTime.asSeconds;
+			rotation.y += speed * spehs::getDeltaTime().asSeconds;
 		}
 		if (inputManager->isKeyDown(KEYBOARD_O))
 		{
-			rotation.z -= speed * spehs::deltaTime.asSeconds;
+			rotation.z -= speed * spehs::getDeltaTime().asSeconds;
 		}
 		if (inputManager->isKeyDown(KEYBOARD_U))
 		{
-			rotation.z += speed * spehs::deltaTime.asSeconds;
+			rotation.z += speed * spehs::getDeltaTime().asSeconds;
 		}
 		if (inputManager->isKeyDown(KEYBOARD_I))
 		{
-			rotation.x -= speed * spehs::deltaTime.asSeconds;
+			rotation.x -= speed * spehs::getDeltaTime().asSeconds;
 		}
 		if (inputManager->isKeyDown(KEYBOARD_K))
 		{
-			rotation.x += speed * spehs::deltaTime.asSeconds;
+			rotation.x += speed * spehs::getDeltaTime().asSeconds;
 		}
 	}
 	hero->setPosition(position);
 	hero->setRotation(rotation);
 	
-	camera->setTarget(position);
-	camera->setPosition(position + glm::vec3(0.0f, 3.0f, 4.0f));
+	//camera->setTarget(position);
+	//camera->setPosition(position + glm::vec3(0.0f, 5.0f, 6.0f));
 
 	return true;
 }
