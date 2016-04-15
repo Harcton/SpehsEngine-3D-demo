@@ -128,21 +128,13 @@ bool DemoState3D::input()
 			position.y += speed * spehs::deltaTime.asSeconds;
 		}
 		//ROTATE
-		if (inputManager->isKeyDown(KEYBOARD_I))
+		if (inputManager->isKeyDown(KEYBOARD_L))
 		{
 			rotation.y -= speed * spehs::deltaTime.asSeconds;
 		}
-		if (inputManager->isKeyDown(KEYBOARD_K))
-		{
-			rotation.y += speed * spehs::deltaTime.asSeconds;
-		}
 		if (inputManager->isKeyDown(KEYBOARD_J))
 		{
-			rotation.x -= speed * spehs::deltaTime.asSeconds;
-		}
-		if (inputManager->isKeyDown(KEYBOARD_L))
-		{
-			rotation.x += speed * spehs::deltaTime.asSeconds;
+			rotation.y += speed * spehs::deltaTime.asSeconds;
 		}
 		if (inputManager->isKeyDown(KEYBOARD_O))
 		{
@@ -152,11 +144,20 @@ bool DemoState3D::input()
 		{
 			rotation.z += speed * spehs::deltaTime.asSeconds;
 		}
+		if (inputManager->isKeyDown(KEYBOARD_I))
+		{
+			rotation.x -= speed * spehs::deltaTime.asSeconds;
+		}
+		if (inputManager->isKeyDown(KEYBOARD_K))
+		{
+			rotation.x += speed * spehs::deltaTime.asSeconds;
+		}
 	}
 	hero->setPosition(position);
 	hero->setRotation(rotation);
 	
-	//camera->setTarget(position);
+	camera->setTarget(position);
+	camera->setPosition(position + glm::vec3(0.0f, 3.0f, 4.0f));
 
 	return true;
 }
