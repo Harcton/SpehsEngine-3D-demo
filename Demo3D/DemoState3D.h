@@ -8,7 +8,7 @@
 #include <vector>
 
 
-namespace spehs{ class Mesh; class Camera3D; class BatchManager; }
+namespace spehs{ class Mesh; class Camera3D; class BatchManager; class SkyBox; }
 
 class DemoState3D : public State
 {
@@ -24,6 +24,7 @@ private:
 	spehs::Camera3D* camera;
 	spehs::BatchManager* batchManager;
 
+	spehs::SkyBox* skyBox;
 	std::vector<spehs::Mesh*> meshes;
 	spehs::Mesh* hero;
 

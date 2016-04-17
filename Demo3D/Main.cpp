@@ -29,7 +29,7 @@ spehs::BatchManager* batchManager;
 
 void menu()
 {
-	mainWindow->clearColor(0.35f, 0.35f, 0.35f, 1.0f);
+	mainWindow->clearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	spehs::console::addVariable("fps", applicationData->showFps);
 	spehs::console::addVariable("maxfps", applicationData->maxFps);
 

@@ -7,6 +7,7 @@
 #include <SpehsEngine/Mesh.h>
 #include <SpehsEngine/Time.h>
 #include <SpehsEngine/Console.h>
+#include <SpehsEngine/SkyBox.h>
 
 #include <glm/vec3.hpp>
 #include <glm/trigonometric.hpp>
@@ -19,13 +20,15 @@ DemoState3D::DemoState3D() : position(0.0f, -1.0f, 0.0f), rotation(0.0f)
 	batchManager = new spehs::BatchManager(camera);
 	spehs::setActiveBatchManager(batchManager);
 
+	skyBox = new spehs::SkyBox("Textures/Skybox/skybox", ".png");
+
 	meshes.push_back(batchManager->createMesh("Models/duck_ship.obj"));
 	meshes.back()->setColor(spehs::RED);
 	hero = meshes.back();
 
-	meshes.push_back(batchManager->createMesh("Models/asteroid.obj"));
-	meshes.back()->setTexture("Textures/moon_rock.png");
-	meshes.back()->setPosition(0.0f, -6.0f, 0.0f);
+	//meshes.push_back(batchManager->createMesh("Models/asteroid.obj"));
+	//meshes.back()->setTexture("Textures/moon_rock.png");
+	//meshes.back()->setPosition(0.0f, -6.0f, 0.0f);
 
 	meshes.push_back(batchManager->createMesh("Models/plane.obj"));
 	meshes.back()->setColor(spehs::CYAN);
@@ -33,6 +36,7 @@ DemoState3D::DemoState3D() : position(0.0f, -1.0f, 0.0f), rotation(0.0f)
 }
 DemoState3D::~DemoState3D()
 {
+	delete skyBox;
 	for (unsigned i = 0; i < meshes.size(); i++)
 	{
 		meshes[i]->destroy();
