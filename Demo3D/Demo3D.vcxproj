@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioState2D.cpp" />
+    <ClCompile Include="CreateObject.cpp" />
     <ClCompile Include="DemoState2D.cpp" />
     <ClCompile Include="DemoState3D.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -24,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioState2D.h" />
+    <ClInclude Include="CreateObject.h" />
     <ClInclude Include="DemoState2D.h" />
     <ClInclude Include="DemoState3D.h" />
     <ClInclude Include="PhysicsState2D.h" />
