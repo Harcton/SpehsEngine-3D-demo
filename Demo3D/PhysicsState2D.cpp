@@ -7,24 +7,33 @@
 #include "SpehsEngine/InputManager.h"
 #include "SpehsEngine/RNG.h"
 #include "SpehsEngine/Transform2D.h"
+#include "SpehsEngine/RigidBody2D.h"
 #include "SpehsEngine/Sprite.h"
 #include "SpehsEngine/ApplicationData.h"
 #include "SpehsEngine/Polygon.h"
 #include "SpehsEngine/SATCollision.h"
+#include "SpehsEngine/PhysicsWorld2D.h"
+#include "SpehsEngine/Time.h"
 
 #define PI 3.14159265358f
 
 #define USER_X_SIZE 100.0f
 #define USER_Y_SIZE 100.0f
 
+#define SPAWN_INTERVAL 2.0f
 
-PhysicsState2D::PhysicsState2D() : collisionPoint(nullptr)
+
+PhysicsState2D::PhysicsState2D() : collisionPoint(nullptr), gravitySimulation(true), spawnTimer(0.0f)
 {
 	camera = new spehs::Camera2D();
 	batchManager = new spehs::BatchManager(camera);
 	spehs::setActiveBatchManager(batchManager);
 
+	physicsWorld = new spehs::PhysicsWorld2D();
+
 	objects.push_back(createPhysicsObject(USER_X_SIZE, USER_Y_SIZE, 4));
+	physicsWorld->addRigidBody(*objects.back()->getComponent<spehs::RigidBody2D>());
+	objects.back()->getComponent<spehs::RigidBody2D>()->setStatic(true);
 	userOBJ = objects.back();
 }
 PhysicsState2D::~PhysicsState2D()
@@ -44,7 +53,9 @@ bool PhysicsState2D::update()
 	{
 		return false;
 	}
-	collisionTesting();
+	//collisionTesting();
+	physicsSimulation();
+	physicsWorld->update();
 	for (unsigned i = 0; i < objects.size(); i++)
 	{
 		objects[i]->update();
@@ -67,13 +78,21 @@ bool PhysicsState2D::input()
 	//spawn
 	if (inputManager->isKeyPressed(KEYBOARD_SPACE))
 	{
-		objects.push_back(createPhysicsObject(rng->frandom(40.0f, 200.0f), rng->frandom(40.0f, 200.0f), rng->irandom(3, 11)));
-		objects.back()->getComponent<spehs::Transform2D>()->setRotation(rng->frandom(0.0f, 2 * PI));
-		objects.back()->getComponent<spehs::Transform2D>()->setPosition(glm::vec2(rng->frandom((float) -applicationData->getWindowWidthHalf(), (float) applicationData->getWindowWidthHalf()), rng->frandom((float) -applicationData->getWindowHeightHalf(), (float) applicationData->getWindowHeightHalf())));
+		//Create flying test object>>
+
+	}
+	if (inputManager->isKeyPressed(KEYBOARD_F3))
+	{
+		gravitySimulation = !gravitySimulation;
 	}
 
 	//User object
 	static float rotation = 0;
+
+	if (rotation > 2 * PI)
+		rotation = 0.0f;
+	if (rotation < 0)
+		rotation = 2 * PI;
 
 	if (inputManager->isKeyPressed(KEYBOARD_3))
 		userOBJ->getComponent<spehs::Sprite>()->setPolygon(USER_X_SIZE, USER_Y_SIZE, 3);
@@ -93,12 +112,51 @@ bool PhysicsState2D::input()
 		userOBJ->getComponent<spehs::Sprite>()->setPolygon(USER_X_SIZE, USER_Y_SIZE, 25);
 
 	if (inputManager->isKeyDown(KEYBOARD_Q))
-		rotation += 0.01;
+		rotation += 7.0f * spehs::getDeltaTime().asSeconds;
 	if (inputManager->isKeyDown(KEYBOARD_E))
-		rotation -= 0.01;
+		rotation -= 7.0f * spehs::getDeltaTime().asSeconds;
 	userOBJ->getComponent<spehs::Transform2D>()->setPosition(inputManager->getMouseCoords() - glm::vec2(applicationData->getWindowWidthHalf(), applicationData->getWindowHeightHalf()));
 	userOBJ->getComponent<spehs::Transform2D>()->setRotation(rotation);
+	//
+
 	return true;
+}
+void PhysicsState2D::physicsSimulation()
+{
+	if (gravitySimulation)
+	{
+		physicsWorld->setGravity(glm::vec2(0.0f, -9.81f));
+
+		spawnTimer += spehs::getDeltaTime().asSeconds;
+		if (spawnTimer > SPAWN_INTERVAL)
+		{
+			spawnTimer -= SPAWN_INTERVAL;
+			objects.push_back(createPhysicsObject(rng->frandom(40.0f, 200.0f), rng->frandom(40.0f, 200.0f), rng->irandom(3, 11)));
+			physicsWorld->addRigidBody(*objects.back()->getComponent<spehs::RigidBody2D>());
+			objects.back()->getComponent<spehs::Transform2D>()->setRotation(rng->frandom(0.0f, 2 * PI));
+			objects.back()->getComponent<spehs::Transform2D>()->setPosition(glm::vec2(rng->frandom((float) -applicationData->getWindowWidthHalf(), (float) applicationData->getWindowWidthHalf()), (float) applicationData->getWindowHeightHalf()));
+		}
+	}
+	else
+		physicsWorld->setGravity(glm::vec2(0.0f));
+
+	spehs::Transform2D* transform;
+	spehs::Sprite* poly;
+	//Remove objects that are not inside the screen
+	for (unsigned i = 1; i < objects.size(); i++)
+	{
+		transform = objects[i]->getComponent<spehs::Transform2D>();
+		poly = objects[i]->getComponent<spehs::Sprite>();
+		if (transform->getPosition().y < (float) -applicationData->getWindowHeightHalf() - poly->sprite->getRadius() * 2.0f ||
+			transform->getPosition().y >(float) applicationData->getWindowHeightHalf() + poly->sprite->getRadius() * 2.0f ||
+			transform->getPosition().x >(float) applicationData->getWindowWidthHalf() + poly->sprite->getRadius() * 2.0f ||
+			transform->getPosition().x < (float) -applicationData->getWindowWidthHalf() - poly->sprite->getRadius()* 2.0f)
+		{
+			delete objects[i];
+			objects[i] = objects.back();
+			objects.pop_back();
+		}
+	}
 }
 void PhysicsState2D::collisionTesting()
 {
