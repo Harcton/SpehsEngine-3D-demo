@@ -125,8 +125,11 @@ void PhysicsState2D::collisionTesting()
 					collisionPoint = spehs::CircleMTVCollision(glm::vec2(objects[i]->getComponent<spehs::Sprite>()->sprite->getPosition().x, objects[i]->getComponent<spehs::Sprite>()->sprite->getPosition().y), objects[f]->getComponent<spehs::Sprite>()->sprite->getRadius(),
 						glm::vec2(objects[f]->getComponent<spehs::Sprite>()->sprite->getPosition().x, objects[f]->getComponent<spehs::Sprite>()->sprite->getPosition().y), objects[f]->getComponent<spehs::Sprite>()->sprite->getRadius());
 				}
-				collisionPoint = spehs::SATMTVCollision(objects[i]->getComponent<spehs::Sprite>()->sprite->worldVertexArray.data(), objects[i]->getComponent<spehs::Sprite>()->sprite->worldVertexArray.size(),
-					glm::vec2(objects[f]->getComponent<spehs::Sprite>()->sprite->getPosition().x, objects[f]->getComponent<spehs::Sprite>()->sprite->getPosition().y), objects[f]->getComponent<spehs::Sprite>()->sprite->getRadius());
+				else
+				{
+					collisionPoint = spehs::SATMTVCollision(objects[i]->getComponent<spehs::Sprite>()->sprite->worldVertexArray.data(), objects[i]->getComponent<spehs::Sprite>()->sprite->worldVertexArray.size(),
+ 						glm::vec2(objects[f]->getComponent<spehs::Sprite>()->sprite->getPosition().x, objects[f]->getComponent<spehs::Sprite>()->sprite->getPosition().y), objects[f]->getComponent<spehs::Sprite>()->sprite->getRadius());
+				}
 			}
 			else
 			{
@@ -135,8 +138,11 @@ void PhysicsState2D::collisionTesting()
 					collisionPoint = spehs::SATMTVCollision(objects[f]->getComponent<spehs::Sprite>()->sprite->worldVertexArray.data(), objects[f]->getComponent<spehs::Sprite>()->sprite->worldVertexArray.size(),
 						glm::vec2(objects[i]->getComponent<spehs::Sprite>()->sprite->getPosition().x, objects[i]->getComponent<spehs::Sprite>()->sprite->getPosition().y), objects[i]->getComponent<spehs::Sprite>()->sprite->getRadius());
 				}
-				collisionPoint = spehs::SATMTVCollision(objects[i]->getComponent<spehs::Sprite>()->sprite->worldVertexArray.data(), objects[i]->getComponent<spehs::Sprite>()->sprite->worldVertexArray.size(),
-					objects[f]->getComponent<spehs::Sprite>()->sprite->worldVertexArray.data(), objects[f]->getComponent<spehs::Sprite>()->sprite->worldVertexArray.size());
+				else
+				{
+					collisionPoint = spehs::SATMTVCollision(objects[i]->getComponent<spehs::Sprite>()->sprite->worldVertexArray.data(), objects[i]->getComponent<spehs::Sprite>()->sprite->worldVertexArray.size(),
+						objects[f]->getComponent<spehs::Sprite>()->sprite->worldVertexArray.data(), objects[f]->getComponent<spehs::Sprite>()->sprite->worldVertexArray.size());
+				}
 			}
 
 			if (collisionPoint != nullptr)
