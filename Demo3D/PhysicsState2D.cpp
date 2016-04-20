@@ -21,7 +21,10 @@
 #define USER_X_SIZE 100.0f
 #define USER_Y_SIZE 100.0f
 
-#define SPAWN_INTERVAL 1.0f
+#define THRUSTER_STRENGTH 6.0f
+
+#define SPAWN_INTERVAL 0.3f
+#define INITIAL_OBJECTS 10
 
 
 PhysicsState2D::PhysicsState2D() : collisionPoint(nullptr), gravitySimulation(false), spawnTimer(0.0f), flyingOBJ(nullptr)
@@ -36,6 +39,14 @@ PhysicsState2D::PhysicsState2D() : collisionPoint(nullptr), gravitySimulation(fa
 	physicsWorld->addRigidBody(*objects.back()->getComponent<spehs::RigidBody2D>());
 	objects.back()->getComponent<spehs::RigidBody2D>()->setStatic(true);
 	userOBJ = objects.back();
+
+	for (unsigned i = 0; i < INITIAL_OBJECTS; i++)
+	{
+		objects.push_back(createPhysicsObject(70.0f, 70.0f, rng->irandom(3, 11)));
+		physicsWorld->addRigidBody(*objects.back()->getComponent<spehs::RigidBody2D>());
+		objects.back()->getComponent<spehs::Transform2D>()->setPosition(glm::vec2(rng->frandom(-applicationData->getWindowWidthHalf(), applicationData->getWindowWidthHalf()), 
+			rng->frandom(-applicationData->getWindowHeightHalf(), applicationData->getWindowHeightHalf())));
+	}
 }
 PhysicsState2D::~PhysicsState2D()
 {
@@ -134,20 +145,16 @@ bool PhysicsState2D::input()
 	//Flying object
 	if (flyingOBJ != nullptr)
 	{
-		if (inputManager->isKeyDown(KEYBOARD_LEFT))
-		{
-			glm::vec2 direction = glm::vec2(cos(flyingOBJ->getComponent<spehs::Sprite>()->sprite->getRotation()), sin(flyingOBJ->getComponent<spehs::Sprite>()->sprite->getRotation()));
-			direction = glm::vec2(-direction.y, direction.x);
-			if (gravitySimulation)
-				direction *= 10.0f;
-			flyingOBJ->getComponent<spehs::RigidBody2D>()->applyForceAtPosition(direction * flyingOBJ->getComponent<spehs::RigidBody2D>()->getMass(), glm::vec2(spehs::toVec3(flyingOBJ->getComponent<spehs::Sprite>()->sprite->worldVertexArray[1])));
-		}
 		if (inputManager->isKeyDown(KEYBOARD_RIGHT))
 		{
 			glm::vec2 direction = glm::vec2(cos(flyingOBJ->getComponent<spehs::Sprite>()->sprite->getRotation()), sin(flyingOBJ->getComponent<spehs::Sprite>()->sprite->getRotation()));
-			direction = glm::vec2(-direction.y, direction.x);
-			if (gravitySimulation)
-				direction *= 10.0f;
+			direction = glm::vec2(-direction.y, direction.x) * THRUSTER_STRENGTH;
+			flyingOBJ->getComponent<spehs::RigidBody2D>()->applyForceAtPosition(direction * flyingOBJ->getComponent<spehs::RigidBody2D>()->getMass(), glm::vec2(spehs::toVec3(flyingOBJ->getComponent<spehs::Sprite>()->sprite->worldVertexArray[1])));
+		}
+		if (inputManager->isKeyDown(KEYBOARD_LEFT))
+		{
+			glm::vec2 direction = glm::vec2(cos(flyingOBJ->getComponent<spehs::Sprite>()->sprite->getRotation()), sin(flyingOBJ->getComponent<spehs::Sprite>()->sprite->getRotation()));
+			direction = glm::vec2(-direction.y, direction.x) * THRUSTER_STRENGTH;
 			flyingOBJ->getComponent<spehs::RigidBody2D>()->applyForceAtPosition(direction * flyingOBJ->getComponent<spehs::RigidBody2D>()->getMass(), glm::vec2(spehs::toVec3(flyingOBJ->getComponent<spehs::Sprite>()->sprite->worldVertexArray[2])));
 		}
 	}
