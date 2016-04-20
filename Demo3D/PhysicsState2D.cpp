@@ -14,16 +14,17 @@
 #include "SpehsEngine/SATCollision.h"
 #include "SpehsEngine/PhysicsWorld2D.h"
 #include "SpehsEngine/Time.h"
+#include "SpehsEngine/Geometry.h"
 
 #define PI 3.14159265358f
 
 #define USER_X_SIZE 100.0f
 #define USER_Y_SIZE 100.0f
 
-#define SPAWN_INTERVAL 2.0f
+#define SPAWN_INTERVAL 1.0f
 
 
-PhysicsState2D::PhysicsState2D() : collisionPoint(nullptr), gravitySimulation(true), spawnTimer(0.0f)
+PhysicsState2D::PhysicsState2D() : collisionPoint(nullptr), gravitySimulation(false), spawnTimer(0.0f), flyingOBJ(nullptr)
 {
 	camera = new spehs::Camera2D();
 	batchManager = new spehs::BatchManager(camera);
@@ -78,8 +79,19 @@ bool PhysicsState2D::input()
 	//spawn
 	if (inputManager->isKeyPressed(KEYBOARD_SPACE))
 	{
-		//Create flying test object>>
-
+		if (flyingOBJ == nullptr)
+		{
+			objects.push_back(createPhysicsObject(100.0f, 100.0f, 3));
+			physicsWorld->addRigidBody(*objects.back()->getComponent<spehs::RigidBody2D>());
+			objects.back()->setName("FlyingObject");
+			flyingOBJ = objects.back();
+			flyingOBJ->getComponent<spehs::Sprite>()->sprite->worldVertexArray[1].color.setColor(spehs::RED);
+			flyingOBJ->getComponent<spehs::Sprite>()->sprite->worldVertexArray[2].color.setColor(spehs::RED);
+		}
+		else
+		{
+			flyingOBJ->getComponent<spehs::Transform2D>()->setPosition(glm::vec2(0.0f, 0.0f));
+		}
 	}
 	if (inputManager->isKeyPressed(KEYBOARD_F3))
 	{
@@ -119,6 +131,28 @@ bool PhysicsState2D::input()
 	userOBJ->getComponent<spehs::Transform2D>()->setRotation(rotation);
 	//
 
+	//Flying object
+	if (flyingOBJ != nullptr)
+	{
+		if (inputManager->isKeyDown(KEYBOARD_LEFT))
+		{
+			glm::vec2 direction = glm::vec2(cos(flyingOBJ->getComponent<spehs::Sprite>()->sprite->getRotation()), sin(flyingOBJ->getComponent<spehs::Sprite>()->sprite->getRotation()));
+			direction = glm::vec2(-direction.y, direction.x);
+			if (gravitySimulation)
+				direction *= 10.0f;
+			flyingOBJ->getComponent<spehs::RigidBody2D>()->applyForceAtPosition(direction * flyingOBJ->getComponent<spehs::RigidBody2D>()->getMass(), glm::vec2(spehs::toVec3(flyingOBJ->getComponent<spehs::Sprite>()->sprite->worldVertexArray[1])));
+		}
+		if (inputManager->isKeyDown(KEYBOARD_RIGHT))
+		{
+			glm::vec2 direction = glm::vec2(cos(flyingOBJ->getComponent<spehs::Sprite>()->sprite->getRotation()), sin(flyingOBJ->getComponent<spehs::Sprite>()->sprite->getRotation()));
+			direction = glm::vec2(-direction.y, direction.x);
+			if (gravitySimulation)
+				direction *= 10.0f;
+			flyingOBJ->getComponent<spehs::RigidBody2D>()->applyForceAtPosition(direction * flyingOBJ->getComponent<spehs::RigidBody2D>()->getMass(), glm::vec2(spehs::toVec3(flyingOBJ->getComponent<spehs::Sprite>()->sprite->worldVertexArray[2])));
+		}
+	}
+	//
+
 	return true;
 }
 void PhysicsState2D::physicsSimulation()
@@ -131,7 +165,7 @@ void PhysicsState2D::physicsSimulation()
 		if (spawnTimer > SPAWN_INTERVAL)
 		{
 			spawnTimer -= SPAWN_INTERVAL;
-			objects.push_back(createPhysicsObject(rng->frandom(40.0f, 200.0f), rng->frandom(40.0f, 200.0f), rng->irandom(3, 11)));
+			objects.push_back(createPhysicsObject(70.0f, 70.0f, rng->irandom(3, 11)));
 			physicsWorld->addRigidBody(*objects.back()->getComponent<spehs::RigidBody2D>());
 			objects.back()->getComponent<spehs::Transform2D>()->setRotation(rng->frandom(0.0f, 2 * PI));
 			objects.back()->getComponent<spehs::Transform2D>()->setPosition(glm::vec2(rng->frandom((float) -applicationData->getWindowWidthHalf(), (float) applicationData->getWindowWidthHalf()), (float) applicationData->getWindowHeightHalf()));
@@ -152,6 +186,8 @@ void PhysicsState2D::physicsSimulation()
 			transform->getPosition().x >(float) applicationData->getWindowWidthHalf() + poly->sprite->getRadius() * 2.0f ||
 			transform->getPosition().x < (float) -applicationData->getWindowWidthHalf() - poly->sprite->getRadius()* 2.0f)
 		{
+			if (objects[i] == flyingOBJ)
+				flyingOBJ = nullptr;
 			delete objects[i];
 			objects[i] = objects.back();
 			objects.pop_back();
