@@ -26,9 +26,9 @@ DemoState3D::DemoState3D() : position(0.0f, -1.0f, 0.0f), rotation(0.0f)
 	meshes.back()->setColor(spehs::RED);
 	hero = meshes.back();
 
-	//meshes.push_back(batchManager->createMesh("Models/asteroid.obj"));
-	//meshes.back()->setTexture("Textures/moon_rock.png");
-	//meshes.back()->setPosition(0.0f, -6.0f, 0.0f);
+	meshes.push_back(batchManager->createMesh("Models/asteroid.obj"));
+	meshes.back()->setTexture("Textures/moon_rock.png");
+	meshes.back()->setPosition(0.0f, -6.0f, 0.0f);
 
 	meshes.push_back(batchManager->createMesh("Models/plane.obj"));
 	meshes.back()->setColor(spehs::CYAN);

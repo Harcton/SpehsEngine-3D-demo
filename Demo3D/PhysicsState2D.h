@@ -33,6 +33,7 @@ private:
 	std::vector<spehs::Polygon*> collisionPointVisuals;
 	spehs::GameObject* userOBJ;
 	spehs::GameObject* flyingOBJ;
+	spehs::GameObject* floorOBJ;
 
 	spehs::CollisionPoint* collisionPoint;
 };
