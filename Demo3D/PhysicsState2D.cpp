@@ -27,7 +27,7 @@
 #define INITIAL_OBJECTS 10
 
 
-PhysicsState2D::PhysicsState2D() : collisionPoint(nullptr), gravitySimulation(false), spawnTimer(0.0f), flyingOBJ(nullptr), userOBJ(nullptr)
+PhysicsState2D::PhysicsState2D() : collisionPoint(nullptr), gravitySimulation(true), spawnTimer(0.0f), flyingOBJ(nullptr), userOBJ(nullptr)
 {
 	camera = new spehs::Camera2D();
 	batchManager = new spehs::BatchManager(camera);
@@ -287,7 +287,7 @@ void PhysicsState2D::collisionTesting()
 				else
 				{
 					collisionPoint = spehs::SATMTVCollision(objects[i]->getComponent<spehs::Sprite>()->sprite->worldVertexArray.data(), objects[i]->getComponent<spehs::Sprite>()->sprite->worldVertexArray.size(),
- 						glm::vec2(objects[f]->getComponent<spehs::Sprite>()->sprite->getPosition().x, objects[f]->getComponent<spehs::Sprite>()->sprite->getPosition().y), objects[f]->getComponent<spehs::Sprite>()->sprite->getRadius());
+						glm::vec2(objects[f]->getComponent<spehs::Sprite>()->sprite->getPosition().x, objects[f]->getComponent<spehs::Sprite>()->sprite->getPosition().y), objects[f]->getComponent<spehs::Sprite>()->sprite->getRadius());
 				}
 			}
 			else
