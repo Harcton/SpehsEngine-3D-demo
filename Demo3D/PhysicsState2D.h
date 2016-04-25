@@ -6,7 +6,7 @@
 #include <vector>
 
 
-namespace spehs{ class GameObject; class Camera2D; class BatchManager; class Polygon; struct CollisionPoint; class PhysicsWorld2D; }
+namespace spehs{ class GameObject; class Camera2D; class BatchManager; class Polygon; struct CollisionPoint; class PhysicsWorld2D; class Arrow; }
 
 class PhysicsState2D : public State
 {
@@ -30,11 +30,12 @@ private:
 	spehs::PhysicsWorld2D* physicsWorld;
 
 	std::vector<spehs::GameObject*> objects;
-	std::vector<spehs::Polygon*> collisionPointVisuals;
 	spehs::GameObject* userOBJ;
 	spehs::GameObject* flyingOBJ;
 	spehs::GameObject* floorOBJ;
 
 	spehs::CollisionPoint* collisionPoint;
+	std::vector<spehs::Arrow*> collisionNormalVisuals;
+	std::vector<spehs::Polygon*> collisionPointVisuals;
 };
 

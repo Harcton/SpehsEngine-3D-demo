@@ -14,6 +14,7 @@
 #include "SpehsEngine/SATCollision.h"
 #include "SpehsEngine/PhysicsWorld2D.h"
 #include "SpehsEngine/Time.h"
+#include "SpehsEngine/Arrow.h"
 #include "SpehsEngine/Geometry.h"
 
 #define PI 3.14159265358f
@@ -27,7 +28,7 @@
 #define INITIAL_OBJECTS 10
 
 
-PhysicsState2D::PhysicsState2D() : collisionPoint(nullptr), gravitySimulation(true), spawnTimer(0.0f), flyingOBJ(nullptr), userOBJ(nullptr)
+PhysicsState2D::PhysicsState2D() : collisionPoint(nullptr), gravitySimulation(false), spawnTimer(0.0f), flyingOBJ(nullptr), userOBJ(nullptr)
 {
 	camera = new spehs::Camera2D();
 	batchManager = new spehs::BatchManager(camera);
@@ -61,9 +62,20 @@ bool PhysicsState2D::update()
 	{
 		return false;
 	}
-	//collisionTesting();
-	physicsSimulation();
-	physicsWorld->update();
+
+
+	if (gravitySimulation)
+	{
+		physicsSimulation();
+		physicsWorld->update();
+	}
+	else
+	{
+		collisionTesting();
+	}
+
+
+
 	for (unsigned i = 0; i < objects.size(); i++)
 	{
 		objects[i]->update();
@@ -220,8 +232,6 @@ void PhysicsState2D::physicsSimulation()
 {
 	if (gravitySimulation)
 	{
-		physicsWorld->setGravity(glm::vec2(0.0f, -9.81f));
-
 		spawnTimer += spehs::getDeltaTime().asSeconds;
 		if (spawnTimer > SPAWN_INTERVAL)
 		{
@@ -232,8 +242,6 @@ void PhysicsState2D::physicsSimulation()
 			objects.back()->getComponent<spehs::Transform2D>()->setPosition(glm::vec2(rng->frandom((float) -applicationData->getWindowWidthHalf(), (float) applicationData->getWindowWidthHalf()), (float) applicationData->getWindowHeightHalf()));
 		}
 	}
-	else
-		physicsWorld->setGravity(glm::vec2(0.0f));
 
 	spehs::Transform2D* transform;
 	spehs::Sprite* poly;
@@ -272,6 +280,11 @@ void PhysicsState2D::collisionTesting()
 		collisionPointVisuals[i]->destroy();
 	}
 	collisionPointVisuals.clear();
+	for (unsigned i = 0; i < collisionNormalVisuals.size(); i++)
+	{
+		delete collisionNormalVisuals[i];
+	}
+	collisionNormalVisuals.clear();
 
 	for (unsigned f = 0; f < objects.size(); f++)
 	{
@@ -306,11 +319,19 @@ void PhysicsState2D::collisionTesting()
 
 			if (collisionPoint != nullptr)
 			{
-				objects[f]->getComponent<spehs::Sprite>()->sprite->setColor(spehs::RED);
-				objects[i]->getComponent<spehs::Sprite>()->sprite->setColor(spehs::RED);
+				for (unsigned p = 0; p < collisionPoint->point.size(); p++)
+				{
+					objects[f]->getComponent<spehs::Sprite>()->sprite->setColor(spehs::RED);
+					objects[i]->getComponent<spehs::Sprite>()->sprite->setColor(spehs::RED);
 
-				collisionPointVisuals.push_back(batchManager->createPolygon(20, 0, 5.0f, 5.0f));
-				//collisionPointVisuals.back()->setPosition(collisionPoint->point);
+					collisionPointVisuals.push_back(batchManager->createPolygon(20, 0, 5.0f, 5.0f));
+					collisionPointVisuals.back()->setPosition(collisionPoint->point[p]);
+					collisionPointVisuals.back()->setColor(spehs::BLUE);
+
+					collisionNormalVisuals.push_back(new spehs::Arrow(collisionPoint->point[p], collisionPoint->point[p] + collisionPoint->normal[p] * 80.0f));
+					collisionNormalVisuals.back()->setArrowColor(spehs::GREEN);
+					collisionNormalVisuals.back()->setLineThickness(3.0f);
+				}
 
 				delete collisionPoint;
 				collisionPoint = nullptr;
