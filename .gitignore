@@ -29,7 +29,9 @@
 
 #
 Debug/
+Release/
 Demo3D/Debug/
+Demo3D/Release/
 Dependencies/
 *.suo
 *.sdf

@@ -19,8 +19,8 @@
 
 #define PI 3.14159265358f
 
-#define USER_X_SIZE 100.0f
-#define USER_Y_SIZE 100.0f
+#define USER_X_SIZE 70.0f
+#define USER_Y_SIZE 70.0f
 
 #define THRUSTER_STRENGTH 6.0f
 
@@ -96,7 +96,6 @@ bool PhysicsState2D::input()
 	}
 	if (inputManager->isKeyPressed(KEYBOARD_DELETE))
 	{
-		floorOBJ = nullptr;
 		userOBJ = nullptr;
 		flyingOBJ = nullptr;
 		for (unsigned i = 0; i < objects.size(); i++)
@@ -210,18 +209,23 @@ bool PhysicsState2D::input()
 	//Floor object
 	if (inputManager->isKeyPressed(KEYBOARD_TAB))
 	{
-		if (floorOBJ == nullptr)
+		if (floorOBJs.empty())
 		{
-			objects.push_back(createPhysicsObject(1000.0f, 60.0f, 4));
-			physicsWorld->addRigidBody(*objects.back()->getComponent<spehs::RigidBody2D>());
-			objects.back()->getComponent<spehs::RigidBody2D>()->setStatic(true);
-			floorOBJ = objects.back();
-			floorOBJ->getComponent<spehs::Transform2D>()->setPosition(glm::vec2(0, -applicationData->getWindowHeightHalf() + 50.0f));
+			for (unsigned i = 0; i < 7; i++)
+			{
+				floorOBJs.push_back(createPhysicsObject(USER_X_SIZE, USER_Y_SIZE, 4));
+				physicsWorld->addRigidBody(*floorOBJs.back()->getComponent<spehs::RigidBody2D>());
+				floorOBJs.back()->getComponent<spehs::RigidBody2D>()->setStatic(true);
+				floorOBJs.back()->getComponent<spehs::Transform2D>()->setPosition(glm::vec2(i + USER_X_SIZE, -applicationData->getWindowHeightHalf() + 50.0f));
+			}
 		}
 		else
 		{
-			//Make it get deleted
-			floorOBJ->getComponent<spehs::Transform2D>()->setPosition(glm::vec2(10000.0f, 10000.0f));
+			for (unsigned i = 0; i < floorOBJs.size(); i++)
+			{
+				delete floorOBJs[i];
+			}
+			floorOBJs.clear();
 		}
 	}
 	//
@@ -259,8 +263,6 @@ void PhysicsState2D::physicsSimulation()
 				flyingOBJ = nullptr;
 			if (objects[i] == userOBJ)
 				userOBJ = nullptr;
-			if (objects[i] == floorOBJ)
-				floorOBJ = nullptr;
 			delete objects[i];
 			objects[i] = objects.back();
 			objects.pop_back();

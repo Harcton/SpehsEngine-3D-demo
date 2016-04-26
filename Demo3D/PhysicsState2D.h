@@ -32,7 +32,7 @@ private:
 	std::vector<spehs::GameObject*> objects;
 	spehs::GameObject* userOBJ;
 	spehs::GameObject* flyingOBJ;
-	spehs::GameObject* floorOBJ;
+	std::vector<spehs::GameObject*> floorOBJs;
 
 	spehs::CollisionPoint* collisionPoint;
 	std::vector<spehs::Arrow*> collisionNormalVisuals;
