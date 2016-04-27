@@ -16,6 +16,7 @@
 #include "SpehsEngine/Time.h"
 #include "SpehsEngine/Arrow.h"
 #include "SpehsEngine/Geometry.h"
+#include "SpehsEngine/Window.h"
 
 #define PI 3.14159265358f
 
@@ -30,6 +31,7 @@
 
 PhysicsState2D::PhysicsState2D() : collisionPoint(nullptr), gravitySimulation(false), spawnTimer(0.0f), flyingOBJ(nullptr), userOBJ(nullptr)
 {
+	mainWindow->clearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	camera = new spehs::Camera2D();
 	batchManager = new spehs::BatchManager(camera);
 	spehs::setActiveBatchManager(batchManager);
@@ -43,6 +45,8 @@ PhysicsState2D::PhysicsState2D() : collisionPoint(nullptr), gravitySimulation(fa
 		objects.back()->getComponent<spehs::Transform2D>()->setPosition(glm::vec2(rng->frandom(-applicationData->getWindowWidthHalf(), applicationData->getWindowWidthHalf()), 
 			rng->frandom(-applicationData->getWindowHeightHalf(), applicationData->getWindowHeightHalf())));
 		objects.back()->getComponent<spehs::RigidBody2D>()->setUseGravity(false);
+		objects.back()->getComponent<spehs::RigidBody2D>()->setFreezePosition(true);
+		objects.back()->getComponent<spehs::Sprite>()->sprite->setColor(spehs::CYAN);
 	}
 }
 PhysicsState2D::~PhysicsState2D()
@@ -71,7 +75,7 @@ bool PhysicsState2D::update()
 	}
 	else
 	{
-		collisionTesting();
+		//collisionTesting();
 	}
 
 
@@ -98,6 +102,7 @@ bool PhysicsState2D::input()
 	{
 		userOBJ = nullptr;
 		flyingOBJ = nullptr;
+		floorOBJ = nullptr;
 		for (unsigned i = 0; i < objects.size(); i++)
 		{
 			delete objects[i];
@@ -120,6 +125,7 @@ bool PhysicsState2D::input()
 		else
 		{
 			flyingOBJ->getComponent<spehs::Transform2D>()->setPosition(glm::vec2(0.0f, 0.0f));
+			flyingOBJ->getComponent<spehs::Transform2D>()->setRotation(0.0f);
 		}
 	}
 	if (inputManager->isKeyPressed(KEYBOARD_F3))
@@ -188,6 +194,7 @@ bool PhysicsState2D::input()
 			objects.push_back(createPhysicsObject(USER_X_SIZE, USER_Y_SIZE, 4));
 			physicsWorld->addRigidBody(*objects.back()->getComponent<spehs::RigidBody2D>());
 			objects.back()->getComponent<spehs::RigidBody2D>()->setStatic(true);
+			objects.back()->getComponent<spehs::Sprite>()->sprite->setColor(spehs::CYAN);
 			userOBJ = objects.back();
 		}
 		else
@@ -209,23 +216,26 @@ bool PhysicsState2D::input()
 	//Floor object
 	if (inputManager->isKeyPressed(KEYBOARD_TAB))
 	{
-		if (floorOBJs.empty())
+		if (floorOBJ == nullptr)
 		{
-			for (unsigned i = 0; i < 7; i++)
-			{
-				floorOBJs.push_back(createPhysicsObject(USER_X_SIZE, USER_Y_SIZE, 4));
-				physicsWorld->addRigidBody(*floorOBJs.back()->getComponent<spehs::RigidBody2D>());
-				floorOBJs.back()->getComponent<spehs::RigidBody2D>()->setStatic(true);
-				floorOBJs.back()->getComponent<spehs::Transform2D>()->setPosition(glm::vec2(i + USER_X_SIZE, -applicationData->getWindowHeightHalf() + 50.0f));
-			}
+			objects.push_back(createPhysicsObject(USER_X_SIZE, USER_Y_SIZE, 4));
+			physicsWorld->addRigidBody(*objects.back()->getComponent<spehs::RigidBody2D>());
+			objects.back()->getComponent<spehs::RigidBody2D>()->setStatic(true);
+			objects.back()->getComponent<spehs::Transform2D>()->setPosition(glm::vec2(0.0f, -applicationData->getWindowHeightHalf() + 50.0f));
+			floorOBJ = objects.back();
 		}
 		else
 		{
-			for (unsigned i = 0; i < floorOBJs.size(); i++)
+			for (unsigned i = 0; i < objects.size(); i++)
 			{
-				delete floorOBJs[i];
+				if (objects[i] == floorOBJ)
+				{
+					delete objects[i];
+					objects[i] = objects.back();
+					objects.pop_back();
+					floorOBJ = nullptr;
+				}
 			}
-			floorOBJs.clear();
 		}
 	}
 	//
@@ -263,6 +273,8 @@ void PhysicsState2D::physicsSimulation()
 				flyingOBJ = nullptr;
 			if (objects[i] == userOBJ)
 				userOBJ = nullptr;
+			if (objects[i] == floorOBJ)
+				floorOBJ = nullptr;
 			delete objects[i];
 			objects[i] = objects.back();
 			objects.pop_back();
@@ -275,6 +287,8 @@ void PhysicsState2D::collisionTesting()
 	for (unsigned i = 0; i < objects.size(); i++)
 	{
 		objects[i]->getComponent<spehs::Sprite>()->sprite->setColor(spehs::WHITE);
+		if (objects[i]->getComponent<spehs::RigidBody2D>()->getIsStatic() || objects[i]->getComponent<spehs::RigidBody2D>()->getFreezePosition() || objects[i]->getComponent<spehs::RigidBody2D>()->getFreezeRotation())
+			objects[i]->getComponent<spehs::Sprite>()->sprite->setColor(spehs::CYAN);
 	}
 	//remove collision visuals
 	for (unsigned i = 0; i < collisionPointVisuals.size(); i++)

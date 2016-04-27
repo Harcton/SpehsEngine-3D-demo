@@ -68,6 +68,7 @@ void menu()
 	{
 		while (!stateActive)
 		{
+			mainWindow->clearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			spehs::setActiveBatchManager(batchManager);
 
 			exitButton.update();
