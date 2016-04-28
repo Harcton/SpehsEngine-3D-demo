@@ -4,6 +4,7 @@
 #include "DemoState3D.h"
 #include "AudioState2D.h"
 #include "PhysicsState2D.h"
+#include "ShaderContainer.h"
 
 #include <SpehsEngine/SpehsEngine.h>
 #include <SpehsEngine/Window.h>
@@ -35,6 +36,8 @@ void menu()
 
 #pragma region Inits
 	spehs::setActiveBatchManager(batchManager);
+
+	initShaders();
 
 	State* state = nullptr;
 	spehs::GUIRectangle exitButton = spehs::GUIRectangle(BUTTONSIZEX, BUTTONSIZEY);
