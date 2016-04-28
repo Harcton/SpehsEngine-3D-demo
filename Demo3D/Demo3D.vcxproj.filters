@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Extended Engine">
+      <UniqueIdentifier>{d5ab0aea-3988-4cb1-b381-7c52465ffc6d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -36,6 +39,9 @@
     <ClCompile Include="TeoState3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderContainer.cpp">
+      <Filter>Extended Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DemoState2D.h">
@@ -58,6 +64,9 @@
     </ClInclude>
     <ClInclude Include="TeoState3D.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderContainer.h">
+      <Filter>Extended Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
