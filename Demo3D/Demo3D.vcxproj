@@ -17,6 +17,7 @@
     <ClCompile Include="DemoState3D.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PhysicsState2D.cpp" />
+    <ClCompile Include="TeoState3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\SpehsEngine\SpehsEngine\SpehsEngine.vcxproj">
@@ -30,6 +31,7 @@
     <ClInclude Include="DemoState3D.h" />
     <ClInclude Include="PhysicsState2D.h" />
     <ClInclude Include="State.h" />
+    <ClInclude Include="TeoState3D.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A498FBDD-A524-487C-9B7E-2730704B0705}</ProjectGuid>

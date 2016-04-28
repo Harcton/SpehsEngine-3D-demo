@@ -1,5 +1,6 @@
 
 #include "State.h"
+#include "TeoState3D.h"
 #include "DemoState2D.h"
 #include "DemoState3D.h"
 #include "AudioState2D.h"
@@ -42,6 +43,7 @@ void menu()
 	spehs::GUIRectangle audio2DButton = spehs::GUIRectangle(BUTTONSIZEX, BUTTONSIZEY);
 	spehs::GUIRectangle physics2DButton = spehs::GUIRectangle(BUTTONSIZEX, BUTTONSIZEY);
 	spehs::GUIRectangle demo3DButton = spehs::GUIRectangle(BUTTONSIZEX, BUTTONSIZEY);
+	spehs::GUIRectangle teo3DButton = spehs::GUIRectangle(BUTTONSIZEX, BUTTONSIZEY);
 
 	exitButton.setColor(120, 0, 0);
 	exitButton.setPosition(applicationData->getWindowWidthHalf() - BUTTONSIZEX / 2, applicationData->getWindowHeight() * 0.85f);
@@ -62,6 +64,10 @@ void menu()
 	demo3DButton.setColor(10, 80, 10);
 	demo3DButton.setPosition(applicationData->getWindowWidth() * 0.3 - BUTTONSIZEX / 2, applicationData->getWindowHeight() * 0.6f);
 	demo3DButton.setString("GRAPHICS 3D");
+
+	teo3DButton.setColor(60, 80, 40);
+	teo3DButton.setPosition(applicationData->getWindowWidth() * 0.3 - BUTTONSIZEX / 2, applicationData->getWindowHeight() * 0.45f);
+	teo3DButton.setString("TEO 3D");
 #pragma endregion
 
 	while (run)
@@ -81,6 +87,8 @@ void menu()
 			physics2DButton.postUpdate();
 			demo3DButton.update();
 			demo3DButton.postUpdate();
+			teo3DButton.update();
+			teo3DButton.postUpdate();
 
 			inputManager->update();
 
@@ -127,6 +135,15 @@ void menu()
 					}
 					state = new DemoState3D;
 				}
+				if (teo3DButton.getMouseHover())
+				{
+					stateActive = true;
+					if (state != nullptr)
+					{
+						delete state;
+					}
+					state = new TeoState3D;
+				}
 			}
 			if (inputManager->isKeyPressed(KEYBOARD_ESCAPE))
 			{
@@ -142,6 +159,7 @@ void menu()
 			audio2DButton.DRAW_TEXT();
 			physics2DButton.DRAW_TEXT();
 			demo3DButton.DRAW_TEXT();
+			teo3DButton.DRAW_TEXT();
 			mainWindow->renderEnd();
 		}
 		if (!run)
