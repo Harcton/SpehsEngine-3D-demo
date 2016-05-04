@@ -18,8 +18,7 @@ void main()
 	vec3 lighting = vec3(0.0, 0.0, 0.0);
 	
 	//Ambient
-	vec3 ambient = texture(tex, fragmentUV).rgb;
-	
+	vec3 ambient = texture(tex, fragmentUV).rgb;	
 	
 	for	(int i = 0; i < numLights; i++)
 	{
@@ -45,9 +44,9 @@ void main()
 		vec3 diffuse = fragmentColor.rgb * lambertian;
 		
 		//Specular
-		vec3 specular = fragmentColor.rgb * spec;
+		vec3 specular = vec3(1.0, 1.0, 1.0) * spec;
 		
-		lighting = lighting + lights2[i].xyz * lightAttenuation * (diffuse + specular);
+		lighting = lighting + ((diffuse + lights2[i].rgb + specular) * lightAttenuation * lights2[i].a);
 	}
 	color = vec4(ambient + lighting, 1.0);
 }

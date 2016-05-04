@@ -4,7 +4,7 @@ Window mode: 0
 Show FPS: 1
 Max FPS: 200
 VSync: 0
-MSAA: 4
+MSAA: 16
 Master volume: 100
 Music volume: 100
 SFX volume: 100

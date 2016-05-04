@@ -1,12 +1,4 @@
-#include <SpehsEngine/RNG.h>
-#include <SpehsEngine/Console.h>
-#include <SpehsEngine/Camera3D.h>
-#include <SpehsEngine/BatchManager.h>
-#include <SpehsEngine/InputManager.h>
-#include <SpehsEngine/ShaderManager.h>
-#include <SpehsEngine/OpenGLError.h>
-#include <SpehsEngine/Mesh.h>
-#include <SpehsEngine/Time.h>
+
 #include "TeoState3D.h"
 
 TeoUniforms::TeoUniforms(spehs::GLSLProgram& glslProgram, TeoState3D& _teoState) : Uniforms(&glslProgram), teoState(_teoState)
@@ -23,7 +15,7 @@ void TeoUniforms::setUniforms()
 	Uniforms::setUniforms();
 
 	//Pass number of lights
-	glUniform1f(numLightsUniformLocation, teoState.lights1.size());
+	glUniform1f(numLightsUniformLocation, teoState.activeLights);
 	spehs::checkOpenGLErrors(__FILE__, __LINE__);
 
 	//Pass lights arrays
@@ -39,7 +31,7 @@ void TeoUniforms::setUniforms()
 
 
 
-TeoState3D::TeoState3D() : currentLightIndex(1)
+TeoState3D::TeoState3D() : currentLightIndex(1), activeLights(1), skybox(nullptr)
 {
 	camera = new spehs::Camera3D();
 	camera->setSmoothCamera(true);
@@ -58,27 +50,16 @@ TeoState3D::TeoState3D() : currentLightIndex(1)
 	spehs::Shader* shader(new spehs::Shader(5, glslProgram, uniforms));
 	shaderManager->pushShader(shader);
 
-	for (unsigned i = 0; i < 30; i++)
-	{
-		float dev(5.0f);
-		meshes.push_back(batchManager->createMesh("Models/duck_ship.obj"));
-		if (i == 0)
-		{
-			meshes.back()->setPosition(0, 0, 0);
-		}
-		else
-		{
-			meshes.back()->setPosition(rng->frandom(-dev, dev), rng->frandom(-dev, dev), rng->frandom(-dev, dev));
-		}
-		meshes.back()->setColor(0, 0, 0, 255);
-		meshes.back()->setShader(5);
-		//meshes.back()->setTexture("Textures/moon_rock.png");
-	}
+	for (unsigned i = 0; i < 2000; i++)
+		things.push_back(new Thing());
+	//skybox = new spehs::SkyBox("Textures/Skybox/skybox", ".png");
 }
 TeoState3D::~TeoState3D()
 {
-	for (unsigned i = 0; i < meshes.size(); i++)
-		meshes[i]->destroy();
+	for (unsigned i = 0; i < things.size(); i++)
+		delete things[i];
+	if (skybox)
+		delete skybox;
 	delete camera;
 	delete batchManager;
 }
@@ -127,25 +108,27 @@ bool TeoState3D::update()
 	}
 	camera->pitch(inputManager->getMouseMovementX() * spehs::getDeltaTime().asSeconds * lookSpeed);
 	camera->yaw(inputManager->getMouseMovementY() * spehs::getDeltaTime().asSeconds * lookSpeed);
+
+	for (unsigned i = 0; i < things.size(); i++)
+	{
+		things[i]->update();
+	}
 	
 
 
 	//Move camera light
-	lights1[0] = glm::vec4(camera->getPosition().x, camera->getPosition().y, camera->getPosition().z, 20.0f);
-	lights2[0] = glm::vec4(1.0f, 0.7f, 0.3f, 1.0f);
+	lights1[0] = glm::vec4(camera->getPosition().x, camera->getPosition().y, camera->getPosition().z, 30.0f);
+	lights2[0] = glm::vec4(1.0f, 0.7f, 0.3f, 0.1f);
 	//Dropping light
-	if (inputManager->isKeyPressed(KEYBOARD_F))
-	{//"Drop light"
-
-		//Set light specs
-		lights1[currentLightIndex] = glm::vec4(camera->getPosition().x, camera->getPosition().y, camera->getPosition().z, 7.0f);
-		lights2[currentLightIndex] = glm::vec4(rng->frandom(0.0f, 1.0f), rng->frandom(0.0f, 1.0f), rng->frandom(0.0f, 1.0f), rng->frandom(0.5f, 0.9f));
-
-		//Increment current light index
-		if (++currentLightIndex >= lights1.size())
-			currentLightIndex = 1;
-	}
-
+	float alpha(0.4f);
+	if (inputManager->isKeyPressed(KEYBOARD_R))
+		dropLight(1.0f, 0.3f, 0.3f, alpha);
+	if (inputManager->isKeyPressed(KEYBOARD_G))
+		dropLight(0.3f, 1.0f, 0.3f, alpha);
+	if (inputManager->isKeyPressed(KEYBOARD_B))
+		dropLight(0.3f, 0.3f, 1.0f, alpha);
+	if (inputManager->isKeyPressed(KEYBOARD_Y))
+		dropLight(1.0f, 1.0f, 0.3f, alpha);
 
 
 
@@ -159,4 +142,18 @@ void TeoState3D::render()
 {
 	spehs::setActiveBatchManager(batchManager);
 	batchManager->render();
+}
+void TeoState3D::dropLight(float r, float g, float b, float a)
+{//"Drop light"
+
+	//Set light specs
+	lights1[currentLightIndex] = glm::vec4(camera->getPosition().x, camera->getPosition().y, camera->getPosition().z, 50.0f);
+	lights2[currentLightIndex] = glm::vec4(r, g, b, a);
+
+	//Increment current light index
+	if (++currentLightIndex >= lights1.size())
+		currentLightIndex = 1;
+	if (++activeLights > lights1.size())
+		activeLights = lights1.size();	
+
 }
