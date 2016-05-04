@@ -12,5 +12,4 @@ Console text size: 20
 ConsoleTextAlpha (0-255): 255
 GUI text size: 12
 GUI text font path: Fonts/Anonymous.ttf
-Additional CPU threads: 8
-Data directory: data/
+Data directory: 8
