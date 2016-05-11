@@ -9,7 +9,6 @@ out vec4 fragmentColor;
 out vec3 fragmentNormal;
 out vec2 fragmentUV;
 
-
 uniform mat4 cameraMatrix;
 void main()
 {
