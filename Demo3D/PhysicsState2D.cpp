@@ -40,7 +40,7 @@ PhysicsState2D::PhysicsState2D() : collisionPoint(nullptr), gravitySimulation(fa
 
 	for (unsigned i = 0; i < INITIAL_OBJECTS; i++)
 	{
-		objects.push_back(createPhysicsObject(70.0f, 70.0f, rng->irandom(3, 5)));
+		objects.push_back(createPhysicsObject(70.0f * rng->frandom(1.0f, 3.0f), 70.0f * rng->frandom(1.0f, 3.0f), rng->irandom(3, 5)));
 		physicsWorld->addRigidBody(*objects.back()->getComponent<spehs::RigidBody2D>());
 		objects.back()->getComponent<spehs::Transform2D>()->setPosition(glm::vec2(rng->frandom(-applicationData->getWindowWidthHalf(), applicationData->getWindowWidthHalf()), 
 			rng->frandom(-applicationData->getWindowHeightHalf(), applicationData->getWindowHeightHalf())));
@@ -75,7 +75,7 @@ bool PhysicsState2D::update()
 	}
 	else
 	{
-		//collisionTesting();
+		collisionTesting();
 	}
 
 
