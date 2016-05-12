@@ -42,12 +42,12 @@ public:
 		mesh->setShader(5);///< Set shader based on shader's index
 
 		float dev(10.0f);///< Position randomization range
-		mesh->setPosition(rng->frandom(-dev, dev), rng->frandom(-dev, dev), rng->frandom(-dev, dev));///< Randomize position (useful when spawning a number of models)
-		mesh->setRotation(rng->frandom(-TWO_PI, TWO_PI), rng->frandom(-TWO_PI, TWO_PI), rng->frandom(-TWO_PI, TWO_PI));
+		mesh->setPosition(spehs::rng::frandom(-dev, dev), spehs::rng::frandom(-dev, dev), spehs::rng::frandom(-dev, dev));///< Randomize position (useful when spawning a number of models)
+		mesh->setRotation(spehs::rng::frandom(-TWO_PI, TWO_PI), spehs::rng::frandom(-TWO_PI, TWO_PI), spehs::rng::frandom(-TWO_PI, TWO_PI));
 
 		//These values are used for the shake effect
-		movSpeed = rng->frandom(1.0f, rng->frandom(20.0f, 100.0f));
-		rotSpeed = rng->frandom(0.5f, rng->frandom(10.0f, 50.0f));
+		movSpeed = spehs::rng::frandom(1.0f, spehs::rng::frandom(20.0f, 100.0f));
+		rotSpeed = spehs::rng::frandom(0.5f, spehs::rng::frandom(10.0f, 50.0f));
 	}
 	~Model()
 	{
@@ -59,13 +59,13 @@ public:
 		{//Shake effect:	/set shake true
 			float r(rotSpeed * spehs::getDeltaTime().asSeconds), m(movSpeed * spehs::getDeltaTime().asSeconds);
 			mesh->setRotation(
-				mesh->getRotation().x + rng->frandom(-r, r),
-				mesh->getRotation().y + rng->frandom(-r, r),
-				mesh->getRotation().z + rng->frandom(-r, r));
+				mesh->getRotation().x + spehs::rng::frandom(-r, r),
+				mesh->getRotation().y + spehs::rng::frandom(-r, r),
+				mesh->getRotation().z + spehs::rng::frandom(-r, r));
 			mesh->setPosition(
-				mesh->getPosition().x + rng->frandom(-m, m),
-				mesh->getPosition().y + rng->frandom(-m, m),
-				mesh->getPosition().z + rng->frandom(-m, m));
+				mesh->getPosition().x + spehs::rng::frandom(-m, m),
+				mesh->getPosition().y + spehs::rng::frandom(-m, m),
+				mesh->getPosition().z + spehs::rng::frandom(-m, m));
 		}
 	}
 	spehs::Mesh* mesh;

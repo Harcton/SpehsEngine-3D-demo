@@ -40,10 +40,10 @@ PhysicsState2D::PhysicsState2D() : collisionPoint(nullptr), gravitySimulation(fa
 
 	for (unsigned i = 0; i < INITIAL_OBJECTS; i++)
 	{
-		objects.push_back(createPhysicsObject(70.0f * rng->frandom(1.0f, 3.0f), 70.0f * rng->frandom(1.0f, 3.0f), rng->irandom(3, 5)));
+		objects.push_back(createPhysicsObject(70.0f * spehs::rng::frandom(1.0f, 3.0f), 70.0f * spehs::rng::frandom(1.0f, 3.0f), spehs::rng::uirandom(4, 6)));
 		physicsWorld->addRigidBody(*objects.back()->getComponent<spehs::RigidBody2D>());
-		objects.back()->getComponent<spehs::Transform2D>()->setPosition(glm::vec2(rng->frandom(-applicationData->getWindowWidthHalf(), applicationData->getWindowWidthHalf()), 
-			rng->frandom(-applicationData->getWindowHeightHalf(), applicationData->getWindowHeightHalf())));
+		objects.back()->getComponent<spehs::Transform2D>()->setPosition(glm::vec2(spehs::rng::frandom(-applicationData->getWindowWidthHalf(), applicationData->getWindowWidthHalf()),
+			spehs::rng::frandom(-applicationData->getWindowHeightHalf(), applicationData->getWindowHeightHalf())));
 		objects.back()->getComponent<spehs::RigidBody2D>()->setUseGravity(false);
 		objects.back()->getComponent<spehs::RigidBody2D>()->setFreezePosition(true);
 		objects.back()->getComponent<spehs::Sprite>()->sprite->setColor(spehs::CYAN);
@@ -250,10 +250,10 @@ void PhysicsState2D::physicsSimulation()
 		if (spawnTimer > SPAWN_INTERVAL)
 		{
 			spawnTimer -= SPAWN_INTERVAL;
-			objects.push_back(createPhysicsObject(70.0f, 70.0f, rng->irandom(3, 5)));
+			objects.push_back(createPhysicsObject(70.0f, 70.0f, spehs::rng::sirandom(3, 15)));
 			physicsWorld->addRigidBody(*objects.back()->getComponent<spehs::RigidBody2D>());
-			objects.back()->getComponent<spehs::Transform2D>()->setRotation(rng->frandom(0.0f, 2 * PI));
-			objects.back()->getComponent<spehs::Transform2D>()->setPosition(glm::vec2(rng->frandom((float) -applicationData->getWindowWidthHalf(), (float) applicationData->getWindowWidthHalf()), (float) applicationData->getWindowHeightHalf()));
+			objects.back()->getComponent<spehs::Transform2D>()->setRotation(spehs::rng::frandom(0.0f, 2 * PI));
+			objects.back()->getComponent<spehs::Transform2D>()->setPosition(glm::vec2(spehs::rng::frandom((float) -applicationData->getWindowWidthHalf(), (float) applicationData->getWindowWidthHalf()), (float) applicationData->getWindowHeightHalf()));
 		}
 	}
 
@@ -352,6 +352,14 @@ void PhysicsState2D::collisionTesting()
 				delete collisionPoint;
 				collisionPoint = nullptr;
 			}
+		}
+
+		if (collisionPoint = spehs::SATMTVCollision(objects[f]->getComponent<spehs::Sprite>()->sprite->worldVertexArray.data(), objects[f]->getComponent<spehs::Sprite>()->sprite->worldVertexArray.size(),
+			glm::vec2(inputManager->getMouseX() - applicationData->getWindowWidthHalf(), inputManager->getMouseY() - applicationData->getWindowHeightHalf()), 1.0f))
+		{
+			objects[f]->getComponent<spehs::Sprite>()->sprite->setColor(spehs::RED);
+			delete collisionPoint;
+			collisionPoint = nullptr;
 		}
 	}
 }

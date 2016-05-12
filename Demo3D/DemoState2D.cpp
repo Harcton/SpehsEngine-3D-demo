@@ -32,13 +32,13 @@ DemoState2D::DemoState2D() : distrib(2000.0f)
 	for (unsigned i = 0; i < TARGET_POLYGON_COUNT; i++)
 	{
 		polygons.push_back(batchManager->createPolygon(6, 10, 100.0f, 100.0f));
-		polygons.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
+		polygons.back()->setPosition(spehs::rng::frandom(-distrib, distrib), spehs::rng::frandom(-distrib, distrib));
 		polygons.back()->setTexture("Textures/test_texture.png");
 	}
 
 	for (unsigned i = 0; i < 8; i++)
 	{
-		lines.push_back(batchManager->createLine(glm::vec2(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib)), glm::vec2(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib)), 5));
+		lines.push_back(batchManager->createLine(glm::vec2(spehs::rng::frandom(-distrib, distrib), spehs::rng::frandom(-distrib, distrib)), glm::vec2(spehs::rng::frandom(-distrib, distrib), spehs::rng::frandom(-distrib, distrib)), 5));
 		lines.back()->setColor(glm::vec4(1.0f));
 	}
 
@@ -46,7 +46,7 @@ DemoState2D::DemoState2D() : distrib(2000.0f)
 	{
 		points.push_back(batchManager->createPoint(2));
 		points.back()->setColor(glm::vec4(0.9f));
-		points.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
+		points.back()->setPosition(spehs::rng::frandom(-distrib, distrib), spehs::rng::frandom(-distrib, distrib));
 		points.back()->setTexture("Textures/test_texture.png");
 	}
 }
@@ -70,7 +70,7 @@ bool DemoState2D::update()
 		//REMOVE
 		for (unsigned i = 0; i < count; i++)
 		{
-			temp = rng->irandom(0, polygons.size() - 1);
+			temp = spehs::rng::irandom(0, polygons.size() - 1);
 			polygons[temp]->destroy();
 			if (polygons[temp] != polygons.back())
 				polygons[temp] = polygons.back();
@@ -80,7 +80,7 @@ bool DemoState2D::update()
 		for (unsigned i = 0; i < count; i++)
 		{
 			polygons.push_back(batchManager->createPolygon(6, 10, 100.0f, 100.0f));
-			polygons.back()->setPosition(rng->frandom(-distrib, distrib), rng->frandom(-distrib, distrib));
+			polygons.back()->setPosition(spehs::rng::frandom(-distrib, distrib), spehs::rng::frandom(-distrib, distrib));
 			polygons.back()->setTexture("Textures/test_texture.png");
 		}
 	}
