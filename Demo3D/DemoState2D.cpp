@@ -27,7 +27,7 @@ DemoState2D::DemoState2D() : distrib(2000.0f)
 	batchManager = new spehs::BatchManager(camera);
 
 	spehs::setActiveBatchManager(batchManager);
-	textureManager->setDefaultTexture("Textures/test_texture.png");
+	//textureManager->setDefaultTexture("Textures/test_texture.png");
 
 	for (unsigned i = 0; i < TARGET_POLYGON_COUNT; i++)
 	{

@@ -348,9 +348,6 @@ void PhysicsState2D::collisionTesting()
 					collisionNormalVisuals.back()->setArrowColor(spehs::GREEN);
 					collisionNormalVisuals.back()->setLineThickness(3.0f);
 				}
-
-				delete collisionPoint;
-				collisionPoint = nullptr;
 			}
 		}
 
@@ -358,8 +355,6 @@ void PhysicsState2D::collisionTesting()
 			glm::vec2(inputManager->getMouseX() - applicationData->getWindowWidthHalf(), inputManager->getMouseY() - applicationData->getWindowHeightHalf()), 1.0f))
 		{
 			objects[f]->getComponent<spehs::Sprite>()->sprite->setColor(spehs::RED);
-			delete collisionPoint;
-			collisionPoint = nullptr;
 		}
 	}
 }

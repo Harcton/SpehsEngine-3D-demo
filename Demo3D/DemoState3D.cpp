@@ -20,15 +20,15 @@ DemoState3D::DemoState3D() : position(0.0f, -1.0f, 0.0f), rotation(0.0f)
 	batchManager = new spehs::BatchManager(camera);
 	spehs::setActiveBatchManager(batchManager);
 
-	skyBox = new spehs::SkyBox("Textures/Skybox/skybox", ".png");
+	skyBox = new spehs::SkyBox("Textures/Seaview/seaview", ".png");
 
 	meshes.push_back(batchManager->createMesh("Models/duck_ship.obj"));
 	meshes.back()->setColor(spehs::RED);
 	hero = meshes.back();
 
-	meshes.push_back(batchManager->createMesh("Models/asteroid.obj"));
-	meshes.back()->setTexture("Textures/moon_rock.png");
-	meshes.back()->setPosition(0.0f, -6.0f, 0.0f);
+	//meshes.push_back(batchManager->createMesh("Models/asteroid.obj"));
+	//meshes.back()->setTexture("Textures/moon_rock.png");
+	//meshes.back()->setPosition(0.0f, -6.0f, 0.0f);
 
 	meshes.push_back(batchManager->createMesh("Models/plane.obj"));
 	meshes.back()->setColor(spehs::CYAN);
@@ -76,6 +76,8 @@ bool DemoState3D::input()
 
 	if (inputManager->isKeyDown(MOUSEBUTTON_RIGHT)) //Camera movement
 	{
+		inputManager->lockMouse(true);
+
 		if (inputManager->isKeyDown(KEYBOARD_W))
 		{
 			camera->move(spehs::FORWARD, speed * spehs::getDeltaTime().asSeconds);
@@ -92,6 +94,7 @@ bool DemoState3D::input()
 		{
 			camera->move(spehs::RIGHT, speed * spehs::getDeltaTime().asSeconds);
 		}
+
 		if (inputManager->isKeyDown(KEYBOARD_E))
 		{
 			camera->move(spehs::DOWN, speed * spehs::getDeltaTime().asSeconds);
@@ -100,16 +103,20 @@ bool DemoState3D::input()
 		{
 			camera->move(spehs::UP, speed * spehs::getDeltaTime().asSeconds);
 		}
+
 		camera->pitch(inputManager->getMouseMovementX() * spehs::getDeltaTime().asSeconds * lookSpeed);
 		camera->yaw(inputManager->getMouseMovementY() * spehs::getDeltaTime().asSeconds * lookSpeed);
 	}
+	else if (inputManager->isKeyDown(MOUSEBUTTON_MIDDLE))
+	{
+		inputManager->lockMouse(true);
+
+		camera->move(spehs::UP, inputManager->getMouseMovementY() * lookSpeed * spehs::getDeltaTime().asSeconds);
+		camera->move(spehs::RIGHT, inputManager->getMouseMovementX() * lookSpeed * spehs::getDeltaTime().asSeconds);
+	}
 	else//Object movement
 	{
-		if (inputManager->isKeyDown(MOUSEBUTTON_MIDDLE))
-		{
-			camera->move(spehs::UP, inputManager->getMouseMovementY() * lookSpeed * spehs::getDeltaTime().asSeconds);
-			camera->move(spehs::RIGHT, inputManager->getMouseMovementX() * lookSpeed * spehs::getDeltaTime().asSeconds);
-		}
+		inputManager->lockMouse(false);
 		//MOVE
 		if (inputManager->isKeyDown(KEYBOARD_W))
 		{

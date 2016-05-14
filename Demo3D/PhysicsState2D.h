@@ -4,6 +4,7 @@
 #include "State.h"
 
 #include <vector>
+#include <memory>
 
 
 namespace spehs{ class GameObject; class Camera2D; class BatchManager; class Polygon; struct CollisionPoint; class PhysicsWorld2D; class Arrow; }
@@ -34,7 +35,7 @@ private:
 	spehs::GameObject* flyingOBJ;
 	spehs::GameObject* floorOBJ;
 
-	spehs::CollisionPoint* collisionPoint;
+	std::shared_ptr<spehs::CollisionPoint> collisionPoint;
 	std::vector<spehs::Arrow*> collisionNormalVisuals;
 	std::vector<spehs::Polygon*> collisionPointVisuals;
 };
