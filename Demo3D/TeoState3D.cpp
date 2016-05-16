@@ -1,3 +1,4 @@
+#include <SpehsEngine/TextureManager.h>
 #include <SpehsEngine/Console.h>
 #include "TeoState3D.h"
 bool shake(false);
@@ -15,6 +16,8 @@ TeoUniforms::TeoUniforms(spehs::GLSLProgram& glslProgram, TeoState3D& _teoState)
 	teoState.lights2.resize((lightsArray2UniformLocation - 1));
 
 	textureLocation = glslProgram.getUniformLocation("tex");
+	cubeMapLocation = glslProgram.getUniformLocation("cubeMap");
+	cameraPositionPosition = glslProgram.getUniformLocation("cameraPosition");
 }
 void TeoUniforms::setUniforms()
 {/**This function is called from the engine and it will let us to pass on the uniform data, required for the shading.*/
@@ -32,6 +35,18 @@ void TeoUniforms::setUniforms()
 	//Set texture
 	spehs::bind2DTexture(textureDataID, 0);
 	spehs::setUniform_int(textureLocation, 0);
+
+	spehs::bindCubeMapTexture(
+		textureManager->getCubeMapData(
+		"Textures/Seaview/seaviewnegx.png",
+		"Textures/Seaview/seaviewposx.png",
+		"Textures/Seaview/seaviewnegy.png",
+		"Textures/Seaview/seaviewposy.png",
+		"Textures/Seaview/seaviewnegz.png",
+		"Textures/Seaview/seaviewposz.png")->textureDataID,
+		1);
+	spehs::setUniform_int(cubeMapLocation, 1);
+	spehs::setUniform_vec3(cameraPositionPosition, teoState.camera->getPosition());
 }
 
 
@@ -102,6 +117,8 @@ bool TeoState3D::update()
 		camera->move(spehs::DOWN, speed * spehs::getDeltaTime().asSeconds);
 	if (inputManager->isKeyDown(KEYBOARD_SPACE))
 		camera->move(spehs::UP, speed * spehs::getDeltaTime().asSeconds);
+	if (inputManager->isKeyDown(KEYBOARD_F5))
+		reloadShader(ShaderName(TEO_SHADER_INDEX/*NEXT_SHADER_INDEX + NUM_SHADERS*/));
 	if (inputManager->isKeyDown(MOUSEBUTTON_RIGHT))
 	{
 		camera->pitch(inputManager->getMouseMovementX() * spehs::getDeltaTime().asSeconds * lookSpeed);

@@ -1,4 +1,5 @@
 #version 150
+#extension GL_NV_shadow_samplers_cube : enable
 #define lightCount 10//Number of lights for the shader to be able to take in at maximum
 in vec3 fragmentPosition;//Fragment position in world space
 in vec4 fragmentColor;//Not actually used, texturing overrides
@@ -7,11 +8,12 @@ in vec2 fragmentUV;//UV coordinates are used for retrieving texture(colouring) d
 
 out vec4 color;//The outcome of the lighting calculation, texturing accounted
 
-uniform sampler2D tex;
 uniform float numLights;//Number of lights to calculate for, up to previously defined lightCount
 uniform vec4[lightCount] lights1;//Light position: xyz, light radius: w
 uniform vec4[lightCount] lights2;//Light color: rgba
-
+uniform sampler2D tex;
+uniform samplerCube cubeMap;
+uniform vec3 cameraPosition;
 
 void main()
 {
@@ -61,5 +63,6 @@ void main()
 	}
 	
 	//Finally, get the fragment color determined by the texture and multiply it by the total lighting computed
-	color = texture(tex, fragmentUV) * vec4(lighting, 1.0);
+	color = textureCube(cubeMap, reflect(normalize(fragmentPosition - cameraPosition), normalize(fragmentNormal))) * 0.5;
+	color += texture(tex, fragmentUV) * vec4(lighting, 1.0) * 1.00;
 }

@@ -39,7 +39,11 @@ class Model
 public:
 	Model()
 	{
-		mesh = spehs::getActiveBatchManager()->createMesh("Models/asteroid.obj");///< Loads the model from .obj into model manager
+		if (spehs::rng::sirandom(0, 1))
+			mesh = spehs::getActiveBatchManager()->createMesh("Models/sphere.obj");///< Loads the model from .obj into model manager
+		else
+			mesh = spehs::getActiveBatchManager()->createMesh("Models/smooth_asteroid.obj");///< Loads the model from .obj into model manager
+
 		mesh->setTexture("Textures/moon_rock.png");///< Set texture. Model has the UV coordinates to display this specific texture.
 		mesh->setShader(NEXT_SHADER_INDEX + NUM_SHADERS);///< Set shader based on shader's index
 
@@ -94,9 +98,9 @@ public:
 	int currentLightIndex;//What index to drop the next light into
 	int activeLights;//Number of lights active. Caps at lights1/2.size()
 
+	spehs::Camera3D* camera;
 private:
 	//Spehs Engine
-	spehs::Camera3D* camera;
 	spehs::BatchManager* batchManager;///< Batch manager handles primitive sorting into renderable batches
 	std::vector<Model*> models;///< 
 	spehs::SkyBox* skybox;///< not used
@@ -112,8 +116,10 @@ private:
 	TeoState3D& teoState;
 	
 	//Uniform locations as integer handles, used to submit uniform data to the right location
-	GLint textureLocation;
 	GLint numLightsUniformLocation;
 	GLint lightsArray1UniformLocation;
 	GLint lightsArray2UniformLocation;
+	GLint textureLocation;
+	GLint cubeMapLocation;
+	GLint cameraPositionPosition;
 };
