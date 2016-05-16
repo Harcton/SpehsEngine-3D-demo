@@ -13,7 +13,9 @@
 #include <SpehsEngine/GLSLProgram.h>
 #include <SpehsEngine/ShaderManager.h>
 #include "State.h"
+#include "ShaderContainer.h"
 #define TWO_PI 6.28318530718f
+#define TEO_SHADER_INDEX 8
 namespace spehs { class Camera3D; class BatchManager; class Mesh; }
 extern bool shake;
 /**DEMO DESCRIPTION
@@ -39,7 +41,7 @@ public:
 	{
 		mesh = spehs::getActiveBatchManager()->createMesh("Models/asteroid.obj");///< Loads the model from .obj into model manager
 		mesh->setTexture("Textures/moon_rock.png");///< Set texture. Model has the UV coordinates to display this specific texture.
-		mesh->setShader(5);///< Set shader based on shader's index
+		mesh->setShader(NEXT_SHADER_INDEX + NUM_SHADERS);///< Set shader based on shader's index
 
 		float dev(10.0f);///< Position randomization range
 		mesh->setPosition(spehs::rng::frandom(-dev, dev), spehs::rng::frandom(-dev, dev), spehs::rng::frandom(-dev, dev));///< Randomize position (useful when spawning a number of models)

@@ -102,8 +102,11 @@ bool TeoState3D::update()
 		camera->move(spehs::DOWN, speed * spehs::getDeltaTime().asSeconds);
 	if (inputManager->isKeyDown(KEYBOARD_SPACE))
 		camera->move(spehs::UP, speed * spehs::getDeltaTime().asSeconds);
-	camera->pitch(inputManager->getMouseMovementX() * spehs::getDeltaTime().asSeconds * lookSpeed);
-	camera->yaw(inputManager->getMouseMovementY() * spehs::getDeltaTime().asSeconds * lookSpeed);
+	if (inputManager->isKeyDown(MOUSEBUTTON_RIGHT))
+	{
+		camera->pitch(inputManager->getMouseMovementX() * spehs::getDeltaTime().asSeconds * lookSpeed);
+		camera->yaw(inputManager->getMouseMovementY() * spehs::getDeltaTime().asSeconds * lookSpeed);
+	}
 
 	//Update models (shake effect)
 	for (unsigned i = 0; i < models.size(); i++)
