@@ -34,6 +34,15 @@ spehs::Shader* buildShader(const ShaderName _name)
 		return new spehs::Shader((int) ShaderName::Sky, shader, new spehs::DefaultSkyBoxUniforms(shader));
 		break;
 
+	case ShaderName::Pillar:
+		shader->compileShaders("Shaders/pillar.vert", "Shaders/pillar.frag");
+		shader->addAttribute("vertexPosition");
+		shader->addAttribute("vertexNormal");
+		shader->addAttribute("vertexUV");
+		shader->linkShaders();
+		return new spehs::Shader((int) ShaderName::Pillar, shader, new PillarUniforms(shader));
+		break;
+
 	default:
 		delete shader;
 		return nullptr;
@@ -51,6 +60,9 @@ void initShaders()
 
 	//Sky
 	shaderManager->pushShader(buildShader(ShaderName::Sky));
+
+	//Pillar
+	shaderManager->pushShader(buildShader(ShaderName::Pillar));
 }
 void reloadShader(const ShaderName _shaderIndex)
 {
@@ -91,6 +103,7 @@ void DemoUniforms::setUniforms()
 WaterUniforms::WaterUniforms(spehs::GLSLProgram* _shader) : DemoUniforms(_shader)
 {
 	secondsLocation = shader->getUniformLocation("seconds");
+	reflectionTextureLocation = shader->getUniformLocation("reflectionTex");
 }
 WaterUniforms::~WaterUniforms()
 {
@@ -99,7 +112,23 @@ WaterUniforms::~WaterUniforms()
 void WaterUniforms::setUniforms()
 {
 	seconds += spehs::getDeltaTime().asSeconds;
-	spehs::bind2DTexture(textureDataID, 0);
 	spehs::setUniform_float(secondsLocation, seconds);
+	spehs::bindCubeMapTexture(reflectionTextureID, 1);
+	spehs::setUniform_int(reflectionTextureLocation, 1);
+	DemoUniforms::setUniforms();
+}
+
+PillarUniforms::PillarUniforms(spehs::GLSLProgram* _shader) : DemoUniforms(_shader)
+{
+	reflectionTextureLocation = shader->getUniformLocation("reflectionTex");
+}
+PillarUniforms::~PillarUniforms()
+{
+
+}
+void PillarUniforms::setUniforms()
+{
+	spehs::bindCubeMapTexture(reflectionTextureID, 1);
+	spehs::setUniform_int(reflectionTextureLocation, 1);
 	DemoUniforms::setUniforms();
 }

@@ -28,29 +28,29 @@ DemoState3D::DemoState3D() : position(0.0f, 10.0f, 0.0f), rotation(0.0f)
 	skyBox = new spehs::SkyBox("Textures/Simple/sky", ".png");
 	skyBox->setShader((int)ShaderName::Sky);
 
-	//meshes.push_back(batchManager->createMesh("Models/duck_ship.obj"));
-	//meshes.back()->setColor(spehs::RED);
-	//hero = meshes.back();
+	meshes.push_back(batchManager->createMesh("Models/pillar.obj"));
+	meshes.back()->setTexture("Textures/iron_texture.jpg");
+	meshes.back()->setShader((int) ShaderName::Pillar);
 
-	meshes.push_back(batchManager->createMesh("Models/environment.obj"));
-	meshes.back()->setTexture("Textures/stone_texture.jpg");
-	meshes.back()->setScale(8.0f);
-	meshes.back()->setPosition(0.0f, 0.5f, 0.0f);
-	meshes.back()->setShader((int) ShaderName::Environment);
+	//meshes.push_back(batchManager->createMesh("Models/environment.obj"));
+	//meshes.back()->setTexture("Textures/stone_texture.jpg");
+	//meshes.back()->setScale(8.0f);
+	//meshes.back()->setPosition(0.0f, 0.5f, 0.0f);
+	//meshes.back()->setShader((int) ShaderName::Environment);
 
-	meshes.push_back(batchManager->createMesh("Models/environment.obj"));
-	meshes.back()->setTexture("Textures/stone_texture.jpg");
-	meshes.back()->setScale(10.0f);
-	meshes.back()->setRotation(0.0f, 2.0f, 0.0f);
-	meshes.back()->setPosition(3550.0f, 0.5f, 2550.0f);
-	meshes.back()->setShader((int) ShaderName::Environment);
+	//meshes.push_back(batchManager->createMesh("Models/environment.obj"));
+	//meshes.back()->setTexture("Textures/stone_texture.jpg");
+	//meshes.back()->setScale(10.0f);
+	//meshes.back()->setRotation(0.0f, 2.0f, 0.0f);
+	//meshes.back()->setPosition(3550.0f, 0.5f, 2550.0f);
+	//meshes.back()->setShader((int) ShaderName::Environment);
 
-	meshes.push_back(batchManager->createMesh("Models/environment.obj"));
-	meshes.back()->setTexture("Textures/stone_texture.jpg");
-	meshes.back()->setScale(30.0f);
-	meshes.back()->setRotation(0.0f, 3.14f, 0.0f);
-	meshes.back()->setPosition(0.0f, -1.0f, 0.0f);
-	meshes.back()->setShader((int) ShaderName::Environment);
+	//meshes.push_back(batchManager->createMesh("Models/environment.obj"));
+	//meshes.back()->setTexture("Textures/stone_texture.jpg");
+	//meshes.back()->setScale(30.0f);
+	//meshes.back()->setRotation(0.0f, 3.14f, 0.0f);
+	//meshes.back()->setPosition(0.0f, -1.0f, 0.0f);
+	//meshes.back()->setShader((int) ShaderName::Environment);
 
 	meshes.push_back(batchManager->createMesh("Models/plane.obj"));
 	meshes.back()->setScale(30000.0f);
@@ -73,7 +73,10 @@ DemoState3D::~DemoState3D()
 bool DemoState3D::update()
 {
 	shaderManager->getShader((int) ShaderName::Water)->getCustomUniforms<WaterUniforms>()->lightPosition = camera->getPosition();
+	shaderManager->getShader((int) ShaderName::Water)->getCustomUniforms<WaterUniforms>()->reflectionTextureID = textureManager->getCubeMapData(skyBox->getCubeMapHash())->textureDataID;
 	shaderManager->getShader((int) ShaderName::Environment)->getCustomUniforms<DemoUniforms>()->lightPosition = camera->getPosition();
+	shaderManager->getShader((int) ShaderName::Pillar)->getCustomUniforms<PillarUniforms>()->lightPosition = camera->getPosition();
+	shaderManager->getShader((int) ShaderName::Pillar)->getCustomUniforms<PillarUniforms>()->reflectionTextureID = textureManager->getCubeMapData(skyBox->getCubeMapHash())->textureDataID;
 
 	camera->update();
 
@@ -93,7 +96,7 @@ void DemoState3D::render()
 
 bool DemoState3D::input()
 {
-	static float speed = 8.5f;
+	static float speed;
 	static float lookSpeed = 0.8f;
 
 	inputManager->update();
@@ -106,6 +109,19 @@ bool DemoState3D::input()
 		{
 			reloadShader((ShaderName)i);
 		}
+	}
+
+	if (inputManager->isKeyDown(KEYBOARD_LSHIFT))
+	{
+		speed = 9.0f;
+	}
+	else if (inputManager->isKeyDown(KEYBOARD_LCTRL))
+	{
+		speed = 0.5f;
+	}
+	else
+	{
+		speed = 2.0f;
 	}
 
 	if (inputManager->isKeyDown(MOUSEBUTTON_RIGHT)) //Camera movement

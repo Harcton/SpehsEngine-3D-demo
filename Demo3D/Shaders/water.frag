@@ -1,12 +1,16 @@
 #version 150
 
+#extension GL_NV_shadow_samplers_cube : enable
+
 in vec3 fragmentPosition;
 in vec2 texCoord;
 in vec4 fragmentColor;
+//in vec3 view;
 
 out vec4 outColor;
 
 uniform sampler2D tex;
+uniform samplerCube reflectionTex;
 uniform float seconds;
 uniform vec3 lightPosition;
 
@@ -20,7 +24,7 @@ const float emboss = 0.50;
 const float intensity = 1.5;
 const int steps = 5;
 const float frequency = 20.0;
-const int angle = 7;
+const int angle = 20;
 
 const float delta = 40.0;
 const float intence = 400.0;
@@ -70,13 +74,22 @@ void main()
 	if (ddx > 0. && ddy > 0.)
 		alpha = pow(alpha, ddx*ddy*reflectionIntence);
 		
-	vec4 col = texture(tex,c1)*(alpha);
-	outColor = col;
-	
-	float viewDistance = 150.0;
+	float viewDistance = 300.0;
+	vec3 view = normalize(fragmentPosition - lightPosition);
+	vec3 normal = vec3(0.0, 1.0, 0.0);
+	outColor = textureCube(reflectionTex, reflect(view, normal)) * 0.7;
 	if(length(fragmentPosition - lightPosition) > viewDistance)
 	{
 		float dist = min((length(fragmentPosition - lightPosition)), 700.0);
 		outColor = outColor - vec4(0.0008, 0.0006, 0.0006, 1.0) * (dist - viewDistance);
+	}
+		
+	vec4 col = texture(tex, c1)*(alpha);
+	outColor += col;
+	
+	if(length(fragmentPosition - lightPosition) > viewDistance)
+	{
+		float dist = min((length(fragmentPosition - lightPosition)), 700.0);
+		outColor = outColor - vec4(0.0004, 0.0003, 0.000, 1.0) * (dist - viewDistance);
 	}
 }

@@ -18,7 +18,7 @@ Access Uniform values with: shaderManager->getShader( %SHADER_NAME )->getCustomU
 */
 
 
-#define NUM_SHADERS 3
+#define NUM_SHADERS 4
 
 
 enum class ShaderName : int
@@ -26,7 +26,7 @@ enum class ShaderName : int
 	Water = NEXT_SHADER_INDEX,
 	Environment,
 	Sky,
-	
+	Pillar,
 };
 
 extern void initShaders();
@@ -59,7 +59,23 @@ public:
 	void setUniforms();
 
 	float seconds;
+	unsigned int reflectionTextureID;
 
 private:
 	unsigned int secondsLocation = 0;
+	unsigned int reflectionTextureLocation = 0;
+};
+
+class PillarUniforms : public DemoUniforms
+{
+public:
+	PillarUniforms(spehs::GLSLProgram* _shader);
+	~PillarUniforms();
+
+	void setUniforms();
+
+	unsigned int reflectionTextureID;
+
+private:
+	unsigned int reflectionTextureLocation = 0;
 };
