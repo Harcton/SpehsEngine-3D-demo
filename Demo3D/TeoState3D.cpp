@@ -30,7 +30,7 @@ void TeoUniforms::setUniforms()
 	spehs::checkOpenGLErrors(__FILE__, __LINE__);
 
 	//Set texture
-	spehs::bind2DTexture(textureDataID);
+	spehs::bind2DTexture(textureDataID, 0);
 	spehs::setUniform_int(textureLocation, 0);
 }
 

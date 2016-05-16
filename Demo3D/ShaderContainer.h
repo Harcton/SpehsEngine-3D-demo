@@ -3,6 +3,8 @@
 #include <SpehsEngine/ShaderManager.h>
 #include <SpehsEngine/GLSLProgram.h>
 
+#include <glm/vec3.hpp>
+
 #include <vector>
 
 /*
@@ -15,16 +17,49 @@ Order of initialization is important!
 Access Uniform values with: shaderManager->getShader( %SHADER_NAME )->getCustomUniforms< %UNIFORM_CLASS >()-> %UNIFORM_VALUE
 */
 
+
+#define NUM_SHADERS 3
+
+
 enum class ShaderName : int
-{//0-4 already in use for Defaults
+{
+	Water = NEXT_SHADER_INDEX,
+	Environment,
+	Sky,
 	
 };
 
 extern void initShaders();
 extern void reloadShader(const ShaderName _shaderIndex);
 
+
 //Custom Uniforms:
 
+class DemoUniforms : public spehs::Uniforms
+{
+public:
+	DemoUniforms(spehs::GLSLProgram* _shader);
+	virtual ~DemoUniforms();
 
+	virtual void setUniforms();
 
+	glm::vec3 lightPosition;
 
+private:
+	unsigned int textureLocation = 0;
+	unsigned int lightPositionLocation = 0;
+};
+
+class WaterUniforms : public DemoUniforms
+{
+public:
+	WaterUniforms(spehs::GLSLProgram* _shader);
+	~WaterUniforms();
+
+	void setUniforms();
+
+	float seconds;
+
+private:
+	unsigned int secondsLocation = 0;
+};
