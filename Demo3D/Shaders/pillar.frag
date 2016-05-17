@@ -36,10 +36,10 @@ void main()
 	if(lambertian > 0.0)
 	{
 		vec3 halfwayDirection = normalize(lightDirection + viewDirection);
-		float specAngle = max(dot(normal, halfwayDirection), 0.0);\
+		float specAngle = max(dot(normal, halfwayDirection), 0.0);
 		spec = pow(specAngle, shininess);
 	}
-	diffuse = diffuse * lambertian;\
+	diffuse = diffuse * lambertian;
 	specular = specular * spec;
 	outColor += vec4(ambient, 1.0);
 	outColor *= vec4(attenuation * (diffuse + specular), 1.0);

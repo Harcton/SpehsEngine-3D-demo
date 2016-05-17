@@ -1,5 +1,6 @@
 #include <SpehsEngine/TextureManager.h>
 #include <SpehsEngine/Console.h>
+#include <SpehsEngine/Window.h>
 #include "TeoState3D.h"
 bool shake(false);
 bool camlight(false);
@@ -74,7 +75,7 @@ TeoState3D::TeoState3D() : currentLightIndex(0), activeLights(0), skybox(nullptr
 	glslProgram->linkShaders();
 	
 	TeoUniforms* uniforms(new TeoUniforms(*glslProgram, *this));
-	spehs::Shader* shader(new spehs::Shader(5/*This is the shader index used from Model struct constructor*/, glslProgram, uniforms));
+	spehs::Shader* shader(new spehs::Shader(TEO_SHADER_INDEX/*This is the shader index used from Model struct constructor*/, glslProgram, uniforms));
 	shaderManager->pushShader(shader);
 
 	//Create a number of randomly placed models around the scene
@@ -117,12 +118,19 @@ bool TeoState3D::update()
 		camera->move(spehs::DOWN, speed * spehs::getDeltaTime().asSeconds);
 	if (inputManager->isKeyDown(KEYBOARD_SPACE))
 		camera->move(spehs::UP, speed * spehs::getDeltaTime().asSeconds);
-	if (inputManager->isKeyDown(KEYBOARD_F5))
+	if (inputManager->isKeyPressed(KEYBOARD_F5))
 		reloadShader(ShaderName(TEO_SHADER_INDEX/*NEXT_SHADER_INDEX + NUM_SHADERS*/));
 	if (inputManager->isKeyDown(MOUSEBUTTON_RIGHT))
 	{
 		camera->pitch(inputManager->getMouseMovementX() * spehs::getDeltaTime().asSeconds * lookSpeed);
 		camera->yaw(inputManager->getMouseMovementY() * spehs::getDeltaTime().asSeconds * lookSpeed);
+	}
+	if (inputManager->isKeyPressed(KEYBOARD_P))
+	{
+		if (mainWindow->postProcessingEnabled())
+			mainWindow->disablePostProcessingShader();
+		else
+			mainWindow->setPostProcessingShader("Shaders/postproc.vert", "Shaders/postproc.frag");
 	}
 
 	//Update models (shake effect)

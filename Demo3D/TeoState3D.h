@@ -15,7 +15,7 @@
 #include "State.h"
 #include "ShaderContainer.h"
 #define TWO_PI 6.28318530718f
-#define TEO_SHADER_INDEX 8
+#define TEO_SHADER_INDEX 5
 namespace spehs { class Camera3D; class BatchManager; class Mesh; }
 extern bool shake;
 /**DEMO DESCRIPTION

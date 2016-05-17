@@ -62,7 +62,9 @@ void main()
 			//Add to the total lighting: light attenuation * light alpha * (diffuse colouring + specular shining)
 	}
 	
+	float reflectiveness = 0.35;
+	
 	//Finally, get the fragment color determined by the texture and multiply it by the total lighting computed
-	color = textureCube(cubeMap, reflect(normalize(fragmentPosition - cameraPosition), normalize(fragmentNormal))) * 0.5;
-	color += texture(tex, fragmentUV) * vec4(lighting, 1.0) * 1.00;
+	color = textureCube(cubeMap, reflect(normalize(fragmentPosition - cameraPosition), normalize(fragmentNormal))) * vec4(lighting, 1.0) * reflectiveness;
+	color += texture(tex, fragmentUV) * vec4(lighting, 1.0) * (1.0 - reflectiveness);
 }
