@@ -10,6 +10,7 @@
 
 namespace spehs{ class Mesh; class Camera3D; class BatchManager; class SkyBox; }
 
+
 class DemoState3D : public State
 {
 public:
@@ -26,7 +27,8 @@ private:
 
 	spehs::SkyBox* skyBox;
 	std::vector<spehs::Mesh*> meshes;
-	spehs::Mesh* hero;
+	spehs::Mesh* land;
+	spehs::Mesh* grassTemplate;
 
 	glm::vec3 rotation;
 	glm::vec3 position;

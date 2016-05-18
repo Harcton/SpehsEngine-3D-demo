@@ -37,10 +37,21 @@ spehs::Shader* buildShader(const ShaderName _name)
 	case ShaderName::Pillar:
 		shader->compileShaders("Shaders/pillar.vert", "Shaders/pillar.frag");
 		shader->addAttribute("vertexPosition");
+		shader->addAttribute("vertexColor");
 		shader->addAttribute("vertexNormal");
 		shader->addAttribute("vertexUV");
 		shader->linkShaders();
 		return new spehs::Shader((int) ShaderName::Pillar, shader, new PillarUniforms(shader));
+		break;
+
+	case ShaderName::Grass:
+		shader->compileShaders("Shaders/grass.vert", "Shaders/grass.frag");
+		shader->addAttribute("vertexPosition");
+		shader->addAttribute("vertexColor");
+		shader->addAttribute("vertexNormal");
+		shader->addAttribute("vertexUV");
+		shader->linkShaders();
+		return new spehs::Shader((int) ShaderName::Grass, shader, new DemoUniforms(shader));
 		break;
 
 	default:
@@ -63,6 +74,9 @@ void initShaders()
 
 	//Pillar
 	shaderManager->pushShader(buildShader(ShaderName::Pillar));
+
+	//Grass
+	shaderManager->pushShader(buildShader(ShaderName::Grass));
 }
 void reloadShader(const ShaderName _shaderIndex)
 {

@@ -18,7 +18,7 @@ Access Uniform values with: shaderManager->getShader( %SHADER_NAME )->getCustomU
 */
 
 
-#define NUM_SHADERS 4
+#define NUM_SHADERS 5
 
 
 enum class ShaderName : int
@@ -27,6 +27,7 @@ enum class ShaderName : int
 	Environment,
 	Sky,
 	Pillar,
+	Grass,
 };
 
 extern void initShaders();

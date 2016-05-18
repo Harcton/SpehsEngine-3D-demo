@@ -2,17 +2,23 @@
 #include "DemoState3D.h"
 #include "ShaderContainer.h"
 
+#include <SpehsEngine/Window.h>
 #include <SpehsEngine/InputManager.h>
 #include <SpehsEngine/Camera3D.h>
 #include <SpehsEngine/BatchManager.h>
 #include <SpehsEngine/Mesh.h>
+#include <SpehsEngine/RNG.h>
 #include <SpehsEngine/Time.h>
 #include <SpehsEngine/Console.h>
 #include <SpehsEngine/SkyBox.h>
 #include <SpehsEngine/TextureManager.h>
+#include <SpehsEngine/Geometry.h>
+#include <SpehsEngine/Vertex.h>
 
 #include <glm/vec3.hpp>
 #include <glm/trigonometric.hpp>
+
+#include <iostream>
 
 
 DemoState3D::DemoState3D() : position(0.0f, 10.0f, 0.0f), rotation(0.0f)
@@ -25,37 +31,54 @@ DemoState3D::DemoState3D() : position(0.0f, 10.0f, 0.0f), rotation(0.0f)
 	batchManager = new spehs::BatchManager(camera);
 	spehs::setActiveBatchManager(batchManager);
 
+	std::cout << std::endl;
+
 	skyBox = new spehs::SkyBox("Textures/Simple/sky", ".png");
 	skyBox->setShader((int)ShaderName::Sky);
+	std::cout << "Sky loaded." << std::endl;
 
 	meshes.push_back(batchManager->createMesh("Models/pillar.obj"));
-	meshes.back()->setTexture("Textures/iron_texture.jpg");
+	meshes.back()->setTexture("Textures/metal_texture.png");
 	meshes.back()->setShader((int) ShaderName::Pillar);
+	meshes.back()->setColor(0, 0, 0, 255);
+	meshes.back()->setPosition(0.0f, 50.0f, 0.0f);
+	std::cout << "Pillar loaded." << std::endl;
 
-	//meshes.push_back(batchManager->createMesh("Models/environment.obj"));
-	//meshes.back()->setTexture("Textures/stone_texture.jpg");
-	//meshes.back()->setScale(8.0f);
-	//meshes.back()->setPosition(0.0f, 0.5f, 0.0f);
-	//meshes.back()->setShader((int) ShaderName::Environment);
+	meshes.push_back(batchManager->createMesh("Models/environment_land.obj"));
+	meshes.back()->setTexture("Textures/grass.jpg");
+	meshes.back()->setScale(7.0f);
+	meshes.back()->setPosition(0.0f, 0.0f, 0.0f);
+	meshes.back()->setShader((int) ShaderName::Environment);
+	land = meshes.back();
+	std::cout << "Land loaded." << std::endl;
 
-	//meshes.push_back(batchManager->createMesh("Models/environment.obj"));
-	//meshes.back()->setTexture("Textures/stone_texture.jpg");
-	//meshes.back()->setScale(10.0f);
-	//meshes.back()->setRotation(0.0f, 2.0f, 0.0f);
-	//meshes.back()->setPosition(3550.0f, 0.5f, 2550.0f);
-	//meshes.back()->setShader((int) ShaderName::Environment);
-
-	//meshes.push_back(batchManager->createMesh("Models/environment.obj"));
-	//meshes.back()->setTexture("Textures/stone_texture.jpg");
-	//meshes.back()->setScale(30.0f);
-	//meshes.back()->setRotation(0.0f, 3.14f, 0.0f);
-	//meshes.back()->setPosition(0.0f, -1.0f, 0.0f);
-	//meshes.back()->setShader((int) ShaderName::Environment);
+	meshes.push_back(batchManager->createMesh("Models/environment_sand.obj"));
+	meshes.back()->setTexture("Textures/sand.jpg");
+	meshes.back()->setScale(7.0f);
+	meshes.back()->setPosition(0.0f, 0.1f, 0.0f);
+	meshes.back()->setShader((int) ShaderName::Environment);
+	std::cout << "Sand loaded." << std::endl;
 
 	meshes.push_back(batchManager->createMesh("Models/plane.obj"));
 	meshes.back()->setScale(30000.0f);
 	meshes.back()->setShader((int)ShaderName::Water);
 	meshes.back()->setTexture("Textures/water-caustics.jpg");
+	std::cout << "Water loaded." << std::endl;
+
+	land->updateVertices();
+	for (unsigned i = 0; i < land->worldVertexArray.size(); i++)
+	{
+		if (land->worldVertexArray[i].position.y > 10.0f && glm::dot(spehs::toVec3(land->worldVertexArray[i].normal), glm::vec3(0.0f, 1.0f, 0.0f)) < 0.5f)
+		{
+			meshes.push_back(batchManager->createMesh("Models/grass.obj"));
+			meshes.back()->setTexture("Textures/grass_blades.png");
+			meshes.back()->setShader((int) ShaderName::Grass);
+			meshes.back()->setPosition(land->worldVertexArray[i].position.x, land->worldVertexArray[i].position.y + 10.0f, land->worldVertexArray[i].position.z);
+			meshes.back()->setRotation(0.0, 0.0, PI);
+			meshes.back()->setScale(10.0f, 10.0f, 10.0f);
+		}
+		std::cout << "Grass " << i << "/" << land->worldVertexArray.size() << " loaded." << std::endl;
+	}
 }
 DemoState3D::~DemoState3D()
 {
@@ -77,6 +100,7 @@ bool DemoState3D::update()
 	shaderManager->getShader((int) ShaderName::Environment)->getCustomUniforms<DemoUniforms>()->lightPosition = camera->getPosition();
 	shaderManager->getShader((int) ShaderName::Pillar)->getCustomUniforms<PillarUniforms>()->lightPosition = camera->getPosition();
 	shaderManager->getShader((int) ShaderName::Pillar)->getCustomUniforms<PillarUniforms>()->reflectionTextureID = textureManager->getCubeMapData(skyBox->getCubeMapHash())->textureDataID;
+	shaderManager->getShader((int) ShaderName::Grass)->getCustomUniforms<DemoUniforms>()->lightPosition = camera->getPosition();
 
 	camera->update();
 
@@ -218,19 +242,11 @@ bool DemoState3D::input()
 			rotation.x += speed * spehs::getDeltaTime().asSeconds;
 		}
 	}
-	if (hero)
-	{
-		hero->setPosition(position);
-		hero->setRotation(rotation);
-	}
 	
 	if (camera->getPosition().y < 10.0f)
 	{
 		camera->setPosition(glm::vec3(camera->getPosition().x, 10.0f, camera->getPosition().z));
 	}
-
-	//camera->setTarget(position);
-	//camera->setPosition(position + glm::vec3(0.0f, 5.0f, 6.0f));
 
 	return true;
 }
