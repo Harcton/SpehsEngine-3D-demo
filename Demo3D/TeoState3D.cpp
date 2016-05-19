@@ -1,4 +1,5 @@
 #include <SpehsEngine/TextureManager.h>
+#include <SpehsEngine/PostProcessing.h>
 #include <SpehsEngine/Console.h>
 #include <SpehsEngine/Window.h>
 #include "TeoState3D.h"
@@ -127,10 +128,10 @@ bool TeoState3D::update()
 	}
 	if (inputManager->isKeyPressed(KEYBOARD_P))
 	{
-		if (mainWindow->postProcessingEnabled())
-			mainWindow->disablePostProcessingShader();
+		if (spehs::graphics::postproc::postProcessingEnabled())
+			spehs::graphics::postproc::disablePostProcessing();
 		else
-			mainWindow->setPostProcessingShader("Shaders/postproc.vert", "Shaders/postproc.frag");
+			spehs::graphics::postproc::setPostProcessingShader(5);
 	}
 
 	//Update models (shake effect)

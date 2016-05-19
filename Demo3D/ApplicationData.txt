@@ -1,5 +1,5 @@
-Window width: 1600
-Window height: 900
+Window width: 1366
+Window height: 745
 Window mode: 0
 Show FPS: 1
 Max FPS: 200
