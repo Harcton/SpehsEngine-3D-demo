@@ -40,11 +40,11 @@ void main()
 	specular = specular * spec;
 	color = vec4(ambient + attenuation * (diffuse + specular), 1.0);
 	
-	float viewDistance = 300.0;
+	float viewDistance = 350.0;
 	if(length(fragmentPosition - lightPosition) > viewDistance)
 	{
 		float dist = min((length(fragmentPosition - lightPosition)), 700.0);
-		color = color - vec4(0.0008, 0.0006, 0.0006, 1.0) * (dist - viewDistance);
+		color = color - vec4(0.0004, 0.0003, 0.0003, 1.0) * (dist - viewDistance);
 	}
 }
 

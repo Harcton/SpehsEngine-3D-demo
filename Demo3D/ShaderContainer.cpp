@@ -54,6 +54,13 @@ spehs::Shader* buildShader(const ShaderName _name)
 		return new spehs::Shader((int) ShaderName::Grass, shader, new DemoUniforms(shader));
 		break;
 
+	case ShaderName::Particle:
+		shader->compileShaders("Shaders/particle.vert", "Shaders/particle.frag");
+		shader->addAttribute("vertexPosition");
+		shader->linkShaders();
+		return new spehs::Shader((int) ShaderName::Particle, shader, new DemoUniforms(shader));
+		break;
+
 	default:
 		delete shader;
 		return nullptr;
@@ -77,6 +84,9 @@ void initShaders()
 
 	//Grass
 	shaderManager->pushShader(buildShader(ShaderName::Grass));
+
+	//Particle
+	shaderManager->pushShader(buildShader(ShaderName::Particle));
 }
 void reloadShader(const ShaderName _shaderIndex)
 {

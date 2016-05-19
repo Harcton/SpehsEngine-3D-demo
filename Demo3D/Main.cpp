@@ -16,6 +16,8 @@
 #include <SpehsEngine/Camera2D.h>
 #include <SpehsEngine/BatchManager.h>
 #include <SpehsEngine/InputManager.h>
+#include <SpehsEngine/Polygon.h>
+#include <SpehsEngine/PostProcessing.h>
 
 #include <Windows.h>
 
@@ -41,94 +43,40 @@ void menu()
 	initShaders();
 
 	State* state = nullptr;
-	spehs::GUIRectangle exitButton = spehs::GUIRectangle(BUTTONSIZEX, BUTTONSIZEY);
-	spehs::GUIRectangle demo2DButton = spehs::GUIRectangle(BUTTONSIZEX, BUTTONSIZEY);
-	spehs::GUIRectangle audio2DButton = spehs::GUIRectangle(BUTTONSIZEX, BUTTONSIZEY);
-	spehs::GUIRectangle physics2DButton = spehs::GUIRectangle(BUTTONSIZEX, BUTTONSIZEY);
 	spehs::GUIRectangle demo3DButton = spehs::GUIRectangle(BUTTONSIZEX, BUTTONSIZEY);
-	spehs::GUIRectangle teo3DButton = spehs::GUIRectangle(BUTTONSIZEX, BUTTONSIZEY);
 
-	exitButton.setColor(120, 0, 0);
-	exitButton.setPosition(applicationData->getWindowWidthHalf() - BUTTONSIZEX / 2, applicationData->getWindowHeight() * 0.85f);
-	exitButton.setString("EXIT");
-
-	demo2DButton.setColor(0, 120, 0);
-	demo2DButton.setPosition(applicationData->getWindowWidth() * 0.7 - BUTTONSIZEX / 2, applicationData->getWindowHeight() * 0.6f);
-	demo2DButton.setString("GRAPHICS 2D");
-
-	audio2DButton.setColor(70, 70, 70);
-	audio2DButton.setPosition(applicationData->getWindowWidth() * 0.7 - BUTTONSIZEX / 2, applicationData->getWindowHeight() * 0.45f);
-	audio2DButton.setString("AUDIO 2D");
-
-	physics2DButton.setColor(0, 50, 120);
-	physics2DButton.setPosition(applicationData->getWindowWidth() * 0.7 - BUTTONSIZEX / 2, applicationData->getWindowHeight() * 0.3f);
-	physics2DButton.setString("PHYSICS 2D");
-
-	demo3DButton.setColor(10, 80, 10);
-	demo3DButton.setPosition(applicationData->getWindowWidth() * 0.3 - BUTTONSIZEX / 2, applicationData->getWindowHeight() * 0.6f);
-	demo3DButton.setString("GRAPHICS 3D");
-
-	teo3DButton.setColor(60, 80, 40);
-	teo3DButton.setPosition(applicationData->getWindowWidth() * 0.3 - BUTTONSIZEX / 2, applicationData->getWindowHeight() * 0.45f);
-	teo3DButton.setString("TEO 3D");
+	spehs::Polygon* temp = batchManager->createPolygon(4, 0, applicationData->getWindowWidth() * 0.7f, applicationData->getWindowHeight());
+	temp->setTexture("Textures/spehs_engine_demo.png");
+	
+	temp = batchManager->createPolygon(4, -1, applicationData->getWindowWidth(), applicationData->getWindowHeight());
+	temp->setTexture("Textures/background.png");
+	
+	demo3DButton.setColor(120, 120, 120);
+	demo3DButton.setPosition(applicationData->getWindowWidthHalf() - BUTTONSIZEX / 2, applicationData->getWindowHeightHalf() * 0.7f);
+	demo3DButton.setString("START");
+	demo3DButton.setJustification(GUIRECT_TEXT_JUSTIFICATION_CENTER);
 #pragma endregion
 
 	while (run)
 	{
 		while (!stateActive)
 		{
-			mainWindow->clearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			mainWindow->clearColor(0.8f, 0.8f, 0.8f, 1.0f);
 			spehs::setActiveBatchManager(batchManager);
 
-			exitButton.update();
-			exitButton.postUpdate();
-			demo2DButton.update();
-			demo2DButton.postUpdate();
-			audio2DButton.update();
-			audio2DButton.postUpdate();
-			physics2DButton.update();
-			physics2DButton.postUpdate();
 			demo3DButton.update();
 			demo3DButton.postUpdate();
-			teo3DButton.update();
-			teo3DButton.postUpdate();
 
 			inputManager->update();
 
+			if (inputManager->isQuitRequested())
+			{
+				run = false;
+				break;
+			}
+
 			if (inputManager->isKeyPressed(MOUSEBUTTON_LEFT))
 			{
-				if (exitButton.getMouseHover())
-				{
-					stateActive = true;
-					run = false;
-				}
-				if (demo2DButton.getMouseHover())
-				{
-					stateActive = true;
-					if (state != nullptr)
-					{
-						delete state;
-					}
-					state = new DemoState2D;
-				}
-				if (audio2DButton.getMouseHover())
-				{
-					stateActive = true;
-					if (state != nullptr)
-					{
-						delete state;
-					}
-					state = new AudioState2D;
-				}
-				if (physics2DButton.getMouseHover())
-				{
-					stateActive = true;
-					if (state != nullptr)
-					{
-						delete state;
-					}
-					state = new PhysicsState2D;
-				}
 				if (demo3DButton.getMouseHover())
 				{
 					stateActive = true;
@@ -137,15 +85,6 @@ void menu()
 						delete state;
 					}
 					state = new DemoState3D;
-				}
-				if (teo3DButton.getMouseHover())
-				{
-					stateActive = true;
-					if (state != nullptr)
-					{
-						delete state;
-					}
-					state = new TeoState3D;
 				}
 			}
 			if (inputManager->isKeyPressed(KEYBOARD_ESCAPE))
@@ -157,12 +96,7 @@ void menu()
 			spehs::setActiveBatchManager(batchManager);
 			mainWindow->renderBegin();
 			batchManager->render();
-			exitButton.DRAW_TEXT();
-			demo2DButton.DRAW_TEXT();
-			audio2DButton.DRAW_TEXT();
-			physics2DButton.DRAW_TEXT();
 			demo3DButton.DRAW_TEXT();
-			teo3DButton.DRAW_TEXT();
 			mainWindow->renderEnd();
 		}
 		if (!run)

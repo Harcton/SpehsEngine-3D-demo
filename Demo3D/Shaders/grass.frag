@@ -16,11 +16,11 @@ void main()
 {
 	outColor = texture(tex, fragmentUV) * 0.6;
 
-	float viewDistance = 350.0;
+	float viewDistance = 700.0;
 	if(length(fragmentPosition - lightPosition) > viewDistance)
 	{
-		float dist = min((length(fragmentPosition - lightPosition)), 800.0);
-		outColor = outColor - vec4(0.008, 0.0005, -0.0001, 1.0) * (dist - viewDistance);
+		float dist = min(abs((length(fragmentPosition - lightPosition))), 1300.0);
+		outColor = outColor - vec4(0.000, 0.0002, -0.0001, 1.0) * (dist - viewDistance);
 	}
 	
 	if(outColor.b > 0.22)

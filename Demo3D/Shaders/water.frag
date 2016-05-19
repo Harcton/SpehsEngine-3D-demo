@@ -21,13 +21,13 @@ const float speed_x = 0.2;
 const float speed_y = 0.3;
 
 const float emboss = 0.50;
-const float intensity = 1.5;
+const float intensity = 1.0;
 const int steps = 5;
 const float frequency = 20.0;
 const int angle = 20;
 
 const float delta = 40.0;
-const float intence = 400.0;
+const float intence = 40.0;
 
 const float reflectionCutOff = 0.002;
 const float reflectionIntence = 200000.;
@@ -74,22 +74,13 @@ void main()
 	if (ddx > 0. && ddy > 0.)
 		alpha = pow(alpha, ddx*ddy*reflectionIntence);
 		
-	float viewDistance = 300.0;
+	float viewDistance = 600.0;
 	vec3 view = normalize(fragmentPosition - lightPosition);
 	vec3 normal = vec3(0.0, 1.0, 0.0);
-	outColor = textureCube(reflectionTex, reflect(view, normal)) * 0.7;
-	if(length(fragmentPosition - lightPosition) > viewDistance)
-	{
-		float dist = min((length(fragmentPosition - lightPosition)), 700.0);
-		outColor = outColor - vec4(0.0008, 0.0006, 0.0006, 1.0) * (dist - viewDistance);
-	}
+	outColor = textureCube(reflectionTex, reflect(view, normal)) * 0.2;
 		
-	vec4 col = texture(tex, c1)*(alpha);
+	vec4 col = mix(texture(tex, c1), vec4(0.3, 0.3, 0.5, 1.0), 0.06*log2(length(fragmentPosition - lightPosition)))*(alpha);
 	outColor += col;
+	outColor = mix(outColor, vec4(0.2, 0.3, 0.55, 1.0), 0.07*(length(fragmentPosition)/300))*(alpha);
 	
-	if(length(fragmentPosition - lightPosition) > viewDistance)
-	{
-		float dist = min((length(fragmentPosition - lightPosition)), 700.0);
-		outColor = outColor - vec4(0.0004, 0.0003, 0.000, 1.0) * (dist - viewDistance);
-	}
 }

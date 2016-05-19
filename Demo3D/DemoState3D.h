@@ -22,11 +22,14 @@ public:
 	bool input();
 
 private:
+	void load();
+
 	spehs::Camera3D* camera;
 	spehs::BatchManager* batchManager;
 
 	spehs::SkyBox* skyBox;
 	std::vector<spehs::Mesh*> meshes;
+	std::vector<spehs::Mesh*> particles;
 	spehs::Mesh* land;
 	spehs::Mesh* grassTemplate;
 
