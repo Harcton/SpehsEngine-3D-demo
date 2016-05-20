@@ -11,6 +11,7 @@ out vec3 fragmentNormal;
 out vec2 fragmentUV;
 
 uniform mat4 cameraMatrix;
+uniform float time;
 
 void main()
 {
@@ -19,4 +20,9 @@ void main()
 	fragmentColor = vertexColor;
 	fragmentPosition = vertexPosition;
 	fragmentUV = vertexUV;
+	
+	if(vertexUV.y < 0.5)
+	{
+		gl_Position += vec4(3.0, 0.0, 0.0, 0.0) * sin(vertexPosition.z + time * 0.03) * sin(sqrt(vertexPosition.x*vertexPosition.x + vertexPosition.y*vertexPosition.y));
+	}
 }

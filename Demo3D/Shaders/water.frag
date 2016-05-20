@@ -3,37 +3,38 @@
 #extension GL_NV_shadow_samplers_cube : enable
 
 in vec3 fragmentPosition;
-in vec2 texCoord;
 in vec4 fragmentColor;
-//in vec3 view;
+in vec2 texCoord;
+in vec2 heightCoord;
 
 out vec4 outColor;
 
 uniform sampler2D tex;
 uniform samplerCube reflectionTex;
+uniform sampler2D heightMapTex;
 uniform float seconds;
 uniform vec3 lightPosition;
 
 const float PI = 3.1415926535897932;
 
-const float speed = 2.5;
-const float speed_x = 0.2;
+float speed = 2.5;
+const float speed_x = 0.25;
 const float speed_y = 0.3;
 
-const float emboss = 0.50;
+float emboss = 0.50;
 const float intensity = 1.0;
-const int steps = 5;
-const float frequency = 20.0;
+const int steps = 4;
+const float frequency = 7.0;
 const int angle = 20;
 
-const float delta = 40.0;
-const float intence = 40.0;
+const float delta = 30.0;
+const float intence = 80.0;
 
-const float reflectionCutOff = 0.002;
-const float reflectionIntence = 200000.;
+const float reflectionCutOff = 0.0019;
+const float reflectionIntence = 200000.0;
 
 
-float time = seconds / 10.0;
+float time = seconds / 12.0;
 
 float col(vec2 coord)
 {
@@ -54,7 +55,7 @@ float col(vec2 coord)
 
 void main()
 {
-	vec2 p = (texCoord / 100.0), c1 = p, c2 = p;
+	vec2 p = (texCoord / 30.0), c1 = p, c2 = p;
 	float cc1 = col(c1);
 
 	c2.x += fragmentPosition.x/delta;
@@ -77,10 +78,9 @@ void main()
 	float viewDistance = 600.0;
 	vec3 view = normalize(fragmentPosition - lightPosition);
 	vec3 normal = vec3(0.0, 1.0, 0.0);
-	outColor = textureCube(reflectionTex, reflect(view, normal)) * 0.2;
+	outColor = mix(textureCube(reflectionTex, reflect(view, normal)), vec4(0.0), 0.5 - (texture(heightMapTex, heightCoord).y)) * 0.20;
 		
-	vec4 col = mix(texture(tex, c1), vec4(0.3, 0.3, 0.5, 1.0), 0.06*log2(length(fragmentPosition - lightPosition)))*(alpha);
+	vec4 col = mix(texture(tex, c1), vec4(0.01, 0.01, 0.01, 1.0), 1.0 - (texture(heightMapTex, heightCoord).y))*(alpha);
 	outColor += col;
-	outColor = mix(outColor, vec4(0.2, 0.3, 0.55, 1.0), 0.07*(length(fragmentPosition)/300))*(alpha);
-	
+	outColor = mix(outColor, vec4(0.05, 0.16, 0.20, 1.0), min(0.07*(length(fragmentPosition)/280.0), 1.0))*(alpha);	
 }

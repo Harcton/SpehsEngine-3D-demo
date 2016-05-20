@@ -18,7 +18,7 @@ Access Uniform values with: shaderManager->getShader( %SHADER_NAME )->getCustomU
 */
 
 
-#define NUM_SHADERS 6
+#define NUM_SHADERS 8
 
 
 enum class ShaderName : int
@@ -29,6 +29,8 @@ enum class ShaderName : int
 	Pillar,
 	Grass,
 	Particle,
+	FarWater,
+	Rocks,
 };
 
 extern void initShaders();
@@ -62,10 +64,12 @@ public:
 
 	float seconds;
 	unsigned int reflectionTextureID;
+	unsigned int heightMapTextureID;
 
 private:
 	unsigned int secondsLocation = 0;
 	unsigned int reflectionTextureLocation = 0;
+	unsigned int heightMapTextureLocation = 0;
 };
 
 class PillarUniforms : public DemoUniforms
@@ -80,4 +84,32 @@ public:
 
 private:
 	unsigned int reflectionTextureLocation = 0;
+};
+
+class RocksUniforms : public DemoUniforms
+{
+public:
+	RocksUniforms(spehs::GLSLProgram* _shader);
+	~RocksUniforms();
+
+	void setUniforms();
+
+	unsigned int bumbMapTextureID;
+
+private:
+	unsigned int bumbMapTextureLocation = 0;
+};
+
+class GrassUniforms : public DemoUniforms
+{
+public:
+	GrassUniforms(spehs::GLSLProgram* _shader);
+	~GrassUniforms();
+
+	void setUniforms();
+
+	float time;
+
+private:
+	unsigned int timeLocation = 0;
 };

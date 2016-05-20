@@ -7,6 +7,6 @@ uniform sampler2D tex;
 void main()
 {
 	color = texture(tex, gl_PointCoord);
-	if(color.g > 0.72)
+	if(color.g > 0.85)
 		discard;
 }

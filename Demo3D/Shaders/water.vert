@@ -2,11 +2,13 @@
 
 in vec3 vertexPosition;
 in vec4 vertexColor;
+in vec3 vertexNormal;
+in vec2 vertexUV;
 
 out vec3 fragmentPosition;
 out vec4 fragmentColor;
 out vec2 texCoord;
-//out vec3 view;
+out vec2 heightCoord;
 
 uniform mat4 cameraMatrix;
 
@@ -16,5 +18,5 @@ void main()
 	fragmentColor = vertexColor;
 	fragmentPosition = vertexPosition;
 	texCoord = vec2(vertexPosition.x, vertexPosition.z);
-	//view = normalize(-gl_Position.xyz);
+	heightCoord = vertexUV;
 }

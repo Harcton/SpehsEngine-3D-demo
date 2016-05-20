@@ -17,7 +17,6 @@
 #include <SpehsEngine/BatchManager.h>
 #include <SpehsEngine/InputManager.h>
 #include <SpehsEngine/Polygon.h>
-#include <SpehsEngine/PostProcessing.h>
 
 #include <Windows.h>
 
@@ -93,11 +92,14 @@ void menu()
 				stateActive = true;
 			}
 
-			spehs::setActiveBatchManager(batchManager);
-			mainWindow->renderBegin();
-			batchManager->render();
-			demo3DButton.DRAW_TEXT();
-			mainWindow->renderEnd();
+			if (!stateActive)
+			{
+				spehs::setActiveBatchManager(batchManager);
+				mainWindow->renderBegin();
+				batchManager->render();
+				demo3DButton.DRAW_TEXT();
+				mainWindow->renderEnd();
+			}
 		}
 		if (!run)
 			break;

@@ -8,21 +8,24 @@ in vec2 fragmentUV;
 out vec4 color;
 
 uniform sampler2D tex;
+uniform sampler2D bumpMapTex;
 uniform vec3 lightPosition;
 
 void main()
 {
-	vec3 normal = normalize(fragmentNormal);
+	vec3 bumpMap = texture(bumpMapTex, fragmentUV).rgb * 0.74 - 0.5;
+
+	vec3 normal = normalize(fragmentNormal + bumpMap);
 	vec3 lightPos = vec3(0.0, 1000.0, 0.0);
 	vec3 lightDirection = normalize(lightPos - fragmentPosition);
 	vec3 viewDirection = normalize(-fragmentPosition);
 	float distance = length(lightPos - fragmentPosition);
-	float radius = 3000.0;
+	float radius = 1700.0;
 	float attenuation = 1 - pow((distance / radius), 2);
-	float shininess = 128.0;
+	float shininess = 32.0;
 	
 	//Ambient
-	vec3 ambient = texture(tex, fragmentUV).rgb * 0.2;
+	vec3 ambient = texture(tex, fragmentUV).rgb * 0.9;
 	
 	//Diffuse
 	vec3 diffuse = texture(tex, fragmentUV).rgb;
@@ -30,7 +33,7 @@ void main()
 	//Specular
 	vec3 specular = fragmentColor.rgb;
 	float spec = 0.0;
-	float lambertian = max(dot(lightDirection, normal), 0.0);
+	float lambertian = max(dot(normal, lightDirection), 0.0);
 	if(lambertian > 0.0)
 	{
 		vec3 halfwayDirection = normalize(lightDirection + viewDirection);

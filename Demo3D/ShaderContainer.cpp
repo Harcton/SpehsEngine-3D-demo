@@ -13,6 +13,8 @@ spehs::Shader* buildShader(const ShaderName _name)
 		shader->compileShaders("Shaders/water.vert", "Shaders/water.frag");
 		shader->addAttribute("vertexPosition");
 		shader->addAttribute("vertexColor");
+		shader->addAttribute("vertexNormal");
+		shader->addAttribute("vertexUV");
 		shader->linkShaders();
 		return new spehs::Shader((int)ShaderName::Water, shader, new WaterUniforms(shader));
 		break;
@@ -51,7 +53,7 @@ spehs::Shader* buildShader(const ShaderName _name)
 		shader->addAttribute("vertexNormal");
 		shader->addAttribute("vertexUV");
 		shader->linkShaders();
-		return new spehs::Shader((int) ShaderName::Grass, shader, new DemoUniforms(shader));
+		return new spehs::Shader((int) ShaderName::Grass, shader, new GrassUniforms(shader));
 		break;
 
 	case ShaderName::Particle:
@@ -59,6 +61,26 @@ spehs::Shader* buildShader(const ShaderName _name)
 		shader->addAttribute("vertexPosition");
 		shader->linkShaders();
 		return new spehs::Shader((int) ShaderName::Particle, shader, new DemoUniforms(shader));
+		break;
+
+	case ShaderName::FarWater:
+		shader->compileShaders("Shaders/water.vert", "Shaders/water.frag");
+		shader->addAttribute("vertexPosition");
+		shader->addAttribute("vertexColor");
+		shader->addAttribute("vertexNormal");
+		shader->addAttribute("vertexUV");
+		shader->linkShaders();
+		return new spehs::Shader((int) ShaderName::FarWater, shader, new WaterUniforms(shader));
+		break;
+
+	case ShaderName::Rocks:
+		shader->compileShaders("Shaders/rocks.vert", "Shaders/rocks.frag");
+		shader->addAttribute("vertexPosition");
+		shader->addAttribute("vertexColor");
+		shader->addAttribute("vertexNormal");
+		shader->addAttribute("vertexUV");
+		shader->linkShaders();
+		return new spehs::Shader((int) ShaderName::Rocks, shader, new RocksUniforms(shader));
 		break;
 
 	default:
@@ -87,6 +109,12 @@ void initShaders()
 
 	//Particle
 	shaderManager->pushShader(buildShader(ShaderName::Particle));
+
+	//FarWater
+	shaderManager->pushShader(buildShader(ShaderName::FarWater));
+
+	//Rocks
+	shaderManager->pushShader(buildShader(ShaderName::Rocks));
 }
 void reloadShader(const ShaderName _shaderIndex)
 {
@@ -124,10 +152,11 @@ void DemoUniforms::setUniforms()
 	Uniforms::setUniforms();
 }
 
-WaterUniforms::WaterUniforms(spehs::GLSLProgram* _shader) : DemoUniforms(_shader)
+WaterUniforms::WaterUniforms(spehs::GLSLProgram* _shader) : DemoUniforms(_shader), seconds(0.0f)
 {
 	secondsLocation = shader->getUniformLocation("seconds");
 	reflectionTextureLocation = shader->getUniformLocation("reflectionTex");
+	heightMapTextureLocation = shader->getUniformLocation("heightMapTex");
 }
 WaterUniforms::~WaterUniforms()
 {
@@ -139,6 +168,8 @@ void WaterUniforms::setUniforms()
 	spehs::setUniform_float(secondsLocation, seconds);
 	spehs::bindCubeMapTexture(reflectionTextureID, 1);
 	spehs::setUniform_int(reflectionTextureLocation, 1);
+	spehs::bind2DTexture(heightMapTextureID, 2);
+	spehs::setUniform_int(heightMapTextureLocation, 2);
 	DemoUniforms::setUniforms();
 }
 
@@ -154,5 +185,35 @@ void PillarUniforms::setUniforms()
 {
 	spehs::bindCubeMapTexture(reflectionTextureID, 1);
 	spehs::setUniform_int(reflectionTextureLocation, 1);
+	DemoUniforms::setUniforms();
+}
+
+RocksUniforms::RocksUniforms(spehs::GLSLProgram* _shader) : DemoUniforms(_shader)
+{
+	bumbMapTextureLocation = shader->getUniformLocation("bumpMapTex");
+}
+RocksUniforms::~RocksUniforms()
+{
+
+}
+void RocksUniforms::setUniforms()
+{
+	spehs::bind2DTexture(bumbMapTextureID, 1);
+	spehs::setUniform_int(bumbMapTextureLocation, 1);
+	DemoUniforms::setUniforms();
+}
+
+GrassUniforms::GrassUniforms(spehs::GLSLProgram* _shader) : DemoUniforms(_shader), time(0.0f)
+{
+	timeLocation = shader->getUniformLocation("time");
+}
+GrassUniforms::~GrassUniforms()
+{
+
+}
+void GrassUniforms::setUniforms()
+{
+	time += spehs::getDeltaTime().asSeconds;
+	spehs::setUniform_float(timeLocation, time);
 	DemoUniforms::setUniforms();
 }

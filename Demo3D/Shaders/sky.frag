@@ -11,9 +11,9 @@ uniform samplerCube tex;
 void main()
 {
 	color = textureCube(tex, fragmentPosition);
-	color.r = color.r * min(fragmentPosition.y * 3.0, 1.0);
-	color.g = color.g * min((fragmentPosition.y + 0.05) * 3.0, 1.0);
-	color.b = color.b * min((fragmentPosition.y + 0.3) * 1.7, 1.0);
+	color.r = color.r * min(fragmentPosition.y * 2.0, 1.0);
+	color.g = color.g * max(min((fragmentPosition.y + 0.0) * 2.0, 1.0), 0.7);
+	color.b = color.b * max(min((fragmentPosition.y + 0.0) * 2.0, 1.0), 0.7);
 	
-	color.rgb = ((color.rgb - 0.5) * max(1-fragmentPosition.y + 0.3, 1)) + 0.5;
+	color.rgb = ((color.rgb - 0.5) * max(1-fragmentPosition.y + 0.3, 1)) + 0.3;
 }
