@@ -18,7 +18,7 @@ Access Uniform values with: shaderManager->getShader( %SHADER_NAME )->getCustomU
 */
 
 
-#define NUM_SHADERS 8
+#define NUM_SHADERS 9
 
 
 enum class ShaderName : int
@@ -31,6 +31,7 @@ enum class ShaderName : int
 	Particle,
 	FarWater,
 	Rocks,
+	Bloom,
 };
 
 extern void initShaders();
@@ -81,9 +82,11 @@ public:
 	void setUniforms();
 
 	unsigned int reflectionTextureID;
+	unsigned int bumpMapTextureID;
 
 private:
 	unsigned int reflectionTextureLocation = 0;
+	unsigned int bumpMapTextureLocation = 0;
 };
 
 class RocksUniforms : public DemoUniforms
@@ -94,10 +97,10 @@ public:
 
 	void setUniforms();
 
-	unsigned int bumbMapTextureID;
+	unsigned int bumpMapTextureID;
 
 private:
-	unsigned int bumbMapTextureLocation = 0;
+	unsigned int bumpMapTextureLocation = 0;
 };
 
 class GrassUniforms : public DemoUniforms

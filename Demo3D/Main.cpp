@@ -58,9 +58,9 @@ void menu()
 
 	while (run)
 	{
+		mainWindow->clearColor(0.8f, 0.8f, 0.8f, 1.0f);
 		while (!stateActive)
 		{
-			mainWindow->clearColor(0.8f, 0.8f, 0.8f, 1.0f);
 			spehs::setActiveBatchManager(batchManager);
 
 			demo3DButton.update();
@@ -94,11 +94,13 @@ void menu()
 
 			if (!stateActive)
 			{
+				spehs::beginFPS();
 				spehs::setActiveBatchManager(batchManager);
 				mainWindow->renderBegin();
 				batchManager->render();
 				demo3DButton.DRAW_TEXT();
 				mainWindow->renderEnd();
+				spehs::endFPS();
 			}
 		}
 		if (!run)
@@ -110,7 +112,7 @@ void menu()
 
 		mainWindow->renderBegin();
 		state->render();
-		spehs::console::render();
+		//spehs::console::render();
 		spehs::drawFPS();
 		mainWindow->renderEnd();
 

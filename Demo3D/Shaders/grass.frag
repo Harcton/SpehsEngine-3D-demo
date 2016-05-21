@@ -25,7 +25,7 @@ void main()
 	float shininess = 128.0;
 	
 	//Ambient
-	vec3 ambient = texture(tex, fragmentUV).rgb * 0.55;
+	vec3 ambient = texture(tex, fragmentUV).rgb * 0.57;
 	
 	const float eps = 0.09;
 	if(ambient.r < eps || ambient.g < eps || ambient.b < eps)
@@ -54,4 +54,5 @@ void main()
 		float dist = min((length(fragmentPosition - lightPosition)), 1800.0);
 		outColor = outColor - vec4(0.0002, 0.0001, 0.0001, 1.0) * (dist - viewDistance);
 	}
+	outColor = mix(outColor, vec4(0.05, 0.15, 0.20, 1.0), max(min(0.065*(length(fragmentPosition - lightPosition)/80.0), 0.7), 0.25));
 }

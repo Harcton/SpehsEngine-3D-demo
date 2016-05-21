@@ -78,9 +78,10 @@ void main()
 	float viewDistance = 600.0;
 	vec3 view = normalize(fragmentPosition - lightPosition);
 	vec3 normal = vec3(0.0, 1.0, 0.0);
-	outColor = mix(textureCube(reflectionTex, reflect(view, normal)), vec4(0.0), 0.5 - (texture(heightMapTex, heightCoord).y)) * 0.20;
+	outColor = mix(textureCube(reflectionTex, reflect(view, normal)), vec4(0.0), 0.5 - (texture(heightMapTex, heightCoord).y)) * 0.18;
 		
-	vec4 col = mix(texture(tex, c1), vec4(0.01, 0.01, 0.01, 1.0), 1.0 - (texture(heightMapTex, heightCoord).y))*(alpha);
+	vec4 col = mix(texture(tex, c1), vec4(0.01, 0.01, 0.01, 1.0), 1.10 - (texture(heightMapTex, heightCoord).y))*(alpha);
 	outColor += col;
-	outColor = mix(outColor, vec4(0.05, 0.16, 0.20, 1.0), min(0.07*(length(fragmentPosition)/280.0), 1.0))*(alpha);	
+	outColor = mix(outColor, vec4(0.04, 0.10, 0.14, 1.0), min(0.065*(length(fragmentPosition)/280.0), 1.0))*(alpha);	
+	outColor = mix(outColor, vec4(0.05, 0.15, 0.20, 1.0), min(0.065*(length(fragmentPosition - lightPosition)/80.0), 0.7));
 }

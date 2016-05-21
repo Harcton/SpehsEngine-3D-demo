@@ -5,7 +5,7 @@ in vec4 fragmentColor;
 in vec3 fragmentNormal;
 in vec2 fragmentUV;
 
-out vec4 color;
+out vec4 outColor;
 
 uniform sampler2D tex;
 uniform sampler2D bumpMapTex;
@@ -13,19 +13,19 @@ uniform vec3 lightPosition;
 
 void main()
 {
-	vec3 bumpMap = texture(bumpMapTex, fragmentUV).rgb * 0.74 - 0.5;
+	vec3 bumpMap = texture(bumpMapTex, fragmentUV).rgb * 0.6 - 0.5;
 
-	vec3 normal = normalize(fragmentNormal + bumpMap);
 	vec3 lightPos = vec3(0.0, 1000.0, 0.0);
 	vec3 lightDirection = normalize(lightPos - fragmentPosition);
 	vec3 viewDirection = normalize(-fragmentPosition);
 	float distance = length(lightPos - fragmentPosition);
-	float radius = 1700.0;
+	float radius = 2200.0;
 	float attenuation = 1 - pow((distance / radius), 2);
-	float shininess = 32.0;
+	float shininess = 64.0;
+	vec3 normal = normalize(fragmentNormal + bumpMap * normalize(viewDirection));
 	
 	//Ambient
-	vec3 ambient = texture(tex, fragmentUV).rgb * 0.9;
+	vec3 ambient = texture(tex, fragmentUV).rgb * 0.4;
 	
 	//Diffuse
 	vec3 diffuse = texture(tex, fragmentUV).rgb;
@@ -42,14 +42,15 @@ void main()
 	}
 	diffuse = diffuse * lambertian;
 	specular = specular * spec;
-	color = vec4(ambient + attenuation * (diffuse + specular), 1.0);
+	outColor = vec4(ambient + attenuation * (diffuse + specular), 1.0);
 	
 	float viewDistance = 400.0;
 	if(length(fragmentPosition - lightPosition) > viewDistance)
 	{
 		float dist = min((length(fragmentPosition - lightPosition)), 1800.0);
-		color = color - vec4(0.0002, 0.0001, 0.0001, 1.0) * (dist - viewDistance);
+		outColor = outColor - vec4(0.0002, 0.0001, 0.0001, 1.0) * (dist - viewDistance);
 	}
+	outColor = mix(outColor, vec4(0.05, 0.15, 0.20, 1.0), max(min(0.065*(length(fragmentPosition - lightPosition)/80.0), 0.7), 0.25));
 }
 
 

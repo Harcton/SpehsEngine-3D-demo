@@ -83,6 +83,13 @@ spehs::Shader* buildShader(const ShaderName _name)
 		return new spehs::Shader((int) ShaderName::Rocks, shader, new RocksUniforms(shader));
 		break;
 
+	case ShaderName::Bloom:
+		shader->compileShaders("Shaders/bloom.vert", "Shaders/bloom.frag");
+		shader->addAttribute("vertexPosition");
+		shader->linkShaders();
+		return new spehs::Shader((int) ShaderName::Bloom, shader, new spehs::DefaultTextureUniforms(shader));
+		break;
+
 	default:
 		delete shader;
 		return nullptr;
@@ -115,6 +122,9 @@ void initShaders()
 
 	//Rocks
 	shaderManager->pushShader(buildShader(ShaderName::Rocks));
+
+	//Bloom
+	shaderManager->pushShader(buildShader(ShaderName::Bloom));
 }
 void reloadShader(const ShaderName _shaderIndex)
 {
@@ -176,6 +186,7 @@ void WaterUniforms::setUniforms()
 PillarUniforms::PillarUniforms(spehs::GLSLProgram* _shader) : DemoUniforms(_shader)
 {
 	reflectionTextureLocation = shader->getUniformLocation("reflectionTex");
+	bumpMapTextureLocation = shader->getUniformLocation("bumpMapTex");
 }
 PillarUniforms::~PillarUniforms()
 {
@@ -185,12 +196,14 @@ void PillarUniforms::setUniforms()
 {
 	spehs::bindCubeMapTexture(reflectionTextureID, 1);
 	spehs::setUniform_int(reflectionTextureLocation, 1);
+	spehs::bind2DTexture(bumpMapTextureID, 2);
+	spehs::setUniform_int(bumpMapTextureLocation, 2);
 	DemoUniforms::setUniforms();
 }
 
 RocksUniforms::RocksUniforms(spehs::GLSLProgram* _shader) : DemoUniforms(_shader)
 {
-	bumbMapTextureLocation = shader->getUniformLocation("bumpMapTex");
+	bumpMapTextureLocation = shader->getUniformLocation("bumpMapTex");
 }
 RocksUniforms::~RocksUniforms()
 {
@@ -198,8 +211,8 @@ RocksUniforms::~RocksUniforms()
 }
 void RocksUniforms::setUniforms()
 {
-	spehs::bind2DTexture(bumbMapTextureID, 1);
-	spehs::setUniform_int(bumbMapTextureLocation, 1);
+	spehs::bind2DTexture(bumpMapTextureID, 1);
+	spehs::setUniform_int(bumpMapTextureLocation, 1);
 	DemoUniforms::setUniforms();
 }
 

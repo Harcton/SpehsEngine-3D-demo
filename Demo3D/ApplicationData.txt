@@ -8,8 +8,8 @@ MSAA: 8
 Master volume: 100
 Music volume: 100
 SFX volume: 100
-Console text size: 20
-ConsoleTextAlpha (0-255): 200
+Console text size: 16
+ConsoleTextAlpha (0-255): 175
 GUI text size: 20
-GUI text font path: Fonts/Anonymous.ttf
+GUI text font path: Fonts/Vdj.ttf
 Data directory: data/

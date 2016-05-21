@@ -1,12 +1,13 @@
 #version 150
 
-out vec4 color;
+out vec4 outColor;
 
 uniform sampler2D tex;
 
 void main()
 {
-	color = texture(tex, gl_PointCoord);
-	if(color.g > 0.85)
+	outColor = texture(tex, gl_PointCoord);
+	if(outColor.g > 0.85)
 		discard;
+	outColor = outColor * 0.6;
 }
