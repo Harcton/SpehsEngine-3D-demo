@@ -31,9 +31,5 @@ private:
 	std::vector<spehs::Mesh*> meshes;
 	std::vector<spehs::Mesh*> particles;
 	spehs::Mesh* land;
-	spehs::Mesh* grassTemplate;
-
-	glm::vec3 rotation;
-	glm::vec3 position;
 };
 

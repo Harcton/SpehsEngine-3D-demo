@@ -55,6 +55,7 @@ float col(vec2 coord)
 
 void main()
 {
+	//Water Ripple Effects
 	vec2 p = (texCoord / 30.0), c1 = p, c2 = p;
 	float cc1 = col(c1);
 
@@ -68,20 +69,26 @@ void main()
 	c1.x += dx*2.;
 	c1.y = -(c1.y+dy*2.);
 
-	float alpha = 1.+dot(dx,dy)*intence;
+	float alpha = 1.0+dot(dx,dy)*intence;
 		
 	float ddx = dx - reflectionCutOff;
 	float ddy = dy - reflectionCutOff;
 	if (ddx > 0. && ddy > 0.)
 		alpha = pow(alpha, ddx*ddy*reflectionIntence);
 		
+	//Sky Reflection
 	float viewDistance = 600.0;
 	vec3 view = normalize(fragmentPosition - lightPosition);
 	vec3 normal = vec3(0.0, 1.0, 0.0);
 	outColor = mix(textureCube(reflectionTex, reflect(view, normal)), vec4(0.0), 0.5 - (texture(heightMapTex, heightCoord).y)) * 0.18;
-		
+	
+	//Water color based on height map
 	vec4 col = mix(texture(tex, c1), vec4(0.01, 0.01, 0.01, 1.0), 1.10 - (texture(heightMapTex, heightCoord).y))*(alpha);
 	outColor += col;
+	
+	//Darken water color that is further away from the center (Deep waters)
 	outColor = mix(outColor, vec4(0.04, 0.10, 0.14, 1.0), min(0.065*(length(fragmentPosition)/280.0), 1.0))*(alpha);	
+	
+	//Color correction / Fog effect
 	outColor = mix(outColor, vec4(0.05, 0.15, 0.20, 1.0), min(0.065*(length(fragmentPosition - lightPosition)/80.0), 0.7));
 }

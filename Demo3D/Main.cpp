@@ -126,9 +126,9 @@ void menu()
 }
 
 
-void main()
+int main(int argc, char *argv [])
 {
-	spehs::initialize("SpehsEngine Testing");
+	spehs::initialize("Spehs Engine Demo");
 	camera = new spehs::Camera2D();
 	batchManager = new spehs::BatchManager(camera);
 	menu();

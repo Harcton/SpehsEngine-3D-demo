@@ -8,11 +8,12 @@ uniform sampler2D tex;
 
 void main()
 {
+	//Simple bloom / brightness / blur effect
 	vec4 sum = vec4(0.0);
 
-	for(int i= -4 ;i < 4; i++)
+	for(int i= -5 ;i < 5; i++)
 	{
-		for (int j = -7; j < 7; j++)
+		for (int j = -6; j < 6; j++)
 		{
 			sum += texture2D(tex, texCoord + vec2(j, i)*0.001) * 0.06;
 		}

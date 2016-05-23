@@ -17,6 +17,8 @@ void main()
 	gl_Position = cameraMatrix * vec4(vertexPosition.xyz, 1.0);
 	fragmentColor = vertexColor;
 	fragmentPosition = vertexPosition;
+	
+	//Two different texture coordinates for different uses
 	texCoord = vec2(vertexPosition.x, vertexPosition.z);
 	heightCoord = vertexUV;
 }

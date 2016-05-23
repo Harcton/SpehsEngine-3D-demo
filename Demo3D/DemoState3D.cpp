@@ -29,14 +29,15 @@
 #define ENVIRONMENT_SCALE 7.0f
 
 
-DemoState3D::DemoState3D() : position(0.0f, 10.0f, 0.0f), rotation(0.0f)
+DemoState3D::DemoState3D()
 {
 	camera = new spehs::Camera3D();
 	camera->setSmoothCamera(true);
 	camera->setFar(50000.0f);
 	camera->setNear(5.0f);
 	camera->setFOV(38.0f);
-	camera->setPosition(glm::vec3(-50.0f, 50.0f, -50.0f));
+	camera->setPosition(glm::vec3(220.0, 62.0f, 31.0f));
+	camera->setRotation(glm::vec2(0.8f, 0.8f));
 	batchManager = new spehs::BatchManager(camera);
 
 	load();
